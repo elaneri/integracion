@@ -1,4 +1,4 @@
-package ml.mlChallenge.test;
+package singlesignon.test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class mlIpTest {
+public class singleSignOnTest {
 	private String token = "";
 
 	@Before
