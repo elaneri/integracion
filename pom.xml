@@ -29,7 +29,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.version}</version>
 				<configuration>
-					<mainClass>ml.init.SpringBootJwtApplication</mainClass>
+					<mainClass>singlesignon.init.SpringBootJwtApplication</mainClass>
 				</configuration>
 
 				<executions>
