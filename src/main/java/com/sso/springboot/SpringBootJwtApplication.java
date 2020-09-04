@@ -1,4 +1,4 @@
-package singlesignon.init;
+package com.sso.springboot;
 
 
 import org.springframework.boot.SpringApplication;

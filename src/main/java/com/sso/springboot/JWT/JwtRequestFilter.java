@@ -1,4 +1,4 @@
-package singlesignon.authorizationserver;
+package com.sso.springboot.JWT;
 
 import java.io.IOException;
 
