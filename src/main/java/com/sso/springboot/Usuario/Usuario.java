@@ -30,7 +30,6 @@ public class Usuario implements Serializable  {
 	@JoinColumn(name="id_tenant",nullable=false)
 	private Tenant tenant;
 	
-	
 	@Column(nullable=false,length=15)
 	private String nombre;
 	
