@@ -16,21 +16,6 @@ public class UsuarioController {
     @Autowired
 	private UsuarioServiceImpl usuarioService;
 	
-   	// GET: http://localhost:1317/Usuarios/user/pass/apiKey
- 	@RequestMapping(value="/{usuario}/{pass}/{tipo}")
-	public ResponseEntity<Usuario> getUsuarioByUserAndPassAndApiKey(@PathVariable("usuario") String user,@PathVariable("pass") String pass,
-																				@PathVariable("apiKey") String apiKey){		
- 		Optional<Usuario> usuario = null;
- 		
-    	usuario = usuarioService.findByUserAndPassAndApiKey(user, pass, apiKey);
- 		
-    	if(usuario.isPresent())
- 			return ResponseEntity.ok(usuario.get());
- 		
- 		else 
- 			return ResponseEntity.noContent().build();
-	}
- 	
     //GET: http://localhost:1317/Usuarios/1
   	@RequestMapping(value="/{idUsuario}")
  	public ResponseEntity<Usuario> getUsuarioByID(@PathVariable("idUsuario") Long id){		

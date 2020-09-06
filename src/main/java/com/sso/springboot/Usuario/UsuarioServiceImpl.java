@@ -29,10 +29,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey) {
+	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey){
 		
 		Optional<Usuario> usuario  = usuarioDAO.findByUsuarioAndPassword(user, pass);
-		
+			
 		if (usuario.isPresent() && usuario.get().getTenant().getApiKey().equals(apiKey)) {
 			return usuario;
 		}else {

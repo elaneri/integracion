@@ -63,7 +63,7 @@ public class Usuario implements Serializable  {
 	private String fechaBaja;
 	
 	@Lob
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private byte[] propiedades;
 	
 	
@@ -114,7 +114,6 @@ public class Usuario implements Serializable  {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	
 	
 	public String getFecha_nacimiento() {
 		return fecha_nacimiento;
