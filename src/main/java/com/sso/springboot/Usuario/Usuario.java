@@ -7,17 +7,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.sso.springboot.Tenant.Tenant;
 
 @Entity
 @Table(name="usuarios")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario implements Serializable  {
-	
 	
 	private static final long serialVersionUID = -3359031128100969764L;
 
@@ -25,6 +25,11 @@ public class Usuario implements Serializable  {
 	@Column(name="id_usuario")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idUsuario;
+	
+	@ManyToOne
+	@JoinColumn(name="id_tenant",nullable=false)
+	private Tenant tenant;
+	
 	
 	@Column(nullable=false,length=15)
 	private String nombre;
@@ -42,16 +47,26 @@ public class Usuario implements Serializable  {
 	@Column(nullable=false, length=30)
 	private String mail;
 	
-	@Column(nullable=false, length=1)
-	@NotEmpty(message = "Sexo: Campo requerido")
-	private String sexo;
-	
 	@Column(nullable=false, length=8)
 	@NotNull(message = "Fecha de nacimiento: Campo requerido")
 	private String fecha_nacimiento;
 	
 	@Column(nullable=false, length=20)
 	private String telefono;
+	
+	@Column(nullable=false)
+	private boolean enable;
+	
+	@Column(nullable=false, length=8)
+	private String fechaAlta;
+	
+	@Column(nullable=true, length=8)
+	private String fechaBaja;
+	
+	@Lob
+	@Column(nullable=false)
+	private byte[] propiedades;
+	
 	
 	public Long getIdUsuario() {
 		return idUsuario;
@@ -102,16 +117,6 @@ public class Usuario implements Serializable  {
 	}
 	
 	
-	public String getSexo() {
-		return sexo;
-	}
-
-	public void setSexo(String sexo) {
-		this.sexo = sexo;
-	}
-
-	
-
 	public String getFecha_nacimiento() {
 		return fecha_nacimiento;
 	}
@@ -127,18 +132,44 @@ public class Usuario implements Serializable  {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-
-	public Usuario() {
-    }
 	
-    public Usuario(String nombre,String apellido, String usuario, String pass, String mail,String sexo, String fechaNac, String telefono) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.usuario = usuario;
-        this.password = pass;
-        this.mail = mail;
-        this.sexo = sexo;
-        this.fecha_nacimiento= fechaNac;
-        this.telefono= telefono;
-    }
+	public Tenant getTenant() {
+		return tenant;
+	}
+
+	public void setTenant(Tenant tenant) {
+		this.tenant = tenant;
+	}
+
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	public String getFechaAlta() {
+		return fechaAlta;
+	}
+
+	public void setFechaAlta(String fechaAlta) {
+		this.fechaAlta = fechaAlta;
+	}
+
+	public String getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(String fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
+	public byte[] getPropiedades() {
+		return propiedades;
+	}
+
+	public void setPropiedades(byte[] propiedades) {
+		this.propiedades = propiedades;
+	}
 }
