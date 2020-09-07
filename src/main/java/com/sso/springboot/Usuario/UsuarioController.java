@@ -32,10 +32,15 @@ public class UsuarioController {
   	
  	// POST: http://localhost:1317/Usuarios
 	@PostMapping
-	public ResponseEntity<Usuario> createMedico(@RequestBody Usuario usuario){
+	public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario){
 	
-		Usuario nuevoUsuario = usuarioService.save(usuario);
-		return ResponseEntity.ok(nuevoUsuario);
+		//TODO:codear validaciones
+		if (ValidacionUsuarioHelper.esUsuarioValido(usuario)) {
+			Usuario nuevoUsuario = usuarioService.save(usuario);
+			return ResponseEntity.ok(nuevoUsuario);
+		}else {
+			return ResponseEntity.noContent().build();
+		}
 	}
 	
 	//PUT: http://localhost:1317/Usuarios/Eliminar/1
@@ -55,7 +60,8 @@ public class UsuarioController {
  	 
      //PUT: http://localhost:1317/Usuarios/1
   	 @RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
-     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario nuevoUsuario) {
+     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("idUsuario") long idUsuario,
+    		 													@RequestBody Usuario nuevoUsuario) {
   		
   		 Optional<Usuario> usuario = usuarioService.findById(idUsuario);
   		 
