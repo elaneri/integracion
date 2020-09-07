@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tipos_logs")
+@Table(name="tipos_log")
 public class TipoLog implements Serializable {
 	
 	private static final long serialVersionUID = -3395237410645768606L;

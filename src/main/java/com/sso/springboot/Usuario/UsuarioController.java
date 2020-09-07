@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,8 @@ public class UsuarioController {
     //GET: http://localhost:1317/Usuarios/1
   	@RequestMapping(value="/{idUsuario}")
  	public ResponseEntity<Usuario> getUsuarioByID(@PathVariable("idUsuario") Long id){		
- 		Optional<Usuario> usuario = usuarioService.findById(id);
+ 		
+  		Optional<Usuario> usuario = usuarioService.findById(id);
  		if(usuario.isPresent()) {
  			return ResponseEntity.ok(usuario.get());
  		}
@@ -28,6 +30,29 @@ public class UsuarioController {
  		}	
  	}
   	
+ 	// POST: http://localhost:1317/Usuarios
+	@PostMapping
+	public ResponseEntity<Usuario> createMedico(@RequestBody Usuario usuario){
+	
+		Usuario nuevoUsuario = usuarioService.save(usuario);
+		return ResponseEntity.ok(nuevoUsuario);
+	}
+	
+	//PUT: http://localhost:1317/Usuarios/Eliminar/1
+ 	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
+    public ResponseEntity<Usuario> eliminarUsuario(@PathVariable("idUsuario") long idUsuario) {
+ 		
+ 		 Optional<Usuario> usuario = usuarioService.findById(idUsuario);
+ 		 
+ 		 if(usuario.isPresent()) {
+ 			usuario.get().setEnable(false);
+ 			return ResponseEntity.ok(usuarioService.save(usuario.get()));
+ 		 }
+ 		 else {
+			return ResponseEntity.noContent().build();
+ 		 }	
+    }
+ 	 
      //PUT: http://localhost:1317/Usuarios/1
   	 @RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
      public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario nuevoUsuario) {
