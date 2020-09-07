@@ -33,7 +33,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		
 		Optional<Usuario> usuario  = usuarioDAO.findByUsuarioAndPassword(user, pass);
 			
-		if (usuario.isPresent() && usuario.get().getTenant().getApiKey().equals(apiKey)) {
+		if (usuario.isPresent() && usuario.get().getTenant().getApiKey().equals(apiKey) && usuario.get().isEnable()) {
 			return usuario;
 		}else {
 			return null; 
