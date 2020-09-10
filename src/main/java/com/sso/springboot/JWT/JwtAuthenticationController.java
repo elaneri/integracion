@@ -1,7 +1,6 @@
 package com.sso.springboot.JWT;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioServiceImpl;
 
 @RestController
@@ -34,36 +32,37 @@ public class JwtAuthenticationController {
 	@Autowired
 	private UserDetailsService jwtInMemoryUserDetailsService;
 
-	@RequestMapping(value = "/Login", method = RequestMethod.POST)
+	@RequestMapping(value = "/LoginOld", method = RequestMethod.POST)
 	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
 			throws Exception {
 
-		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword(),
-				authenticationRequest.getApiKey());
+		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword(),authenticationRequest.getApiKey());
 
-		final UserDetails userDetails = jwtInMemoryUserDetailsService
+		/*final UserDetails userDetails = jwtInMemoryUserDetailsService
 				.loadUserByUsername(authenticationRequest.getUsername());
-
-		final String token = jwtTokenUtil.generateToken(userDetails);
+*/
+		
+		//userDetails
+		final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername());
 
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
-	private void authenticate(String username, String password, String apki) throws Exception {
+	private void authenticate(Object username, Object password, String apikey) throws Exception {
 		Objects.requireNonNull(username);
 		Objects.requireNonNull(password);
-		Objects.requireNonNull(apki);
+		Objects.requireNonNull(apikey);
 
 		try {
 
-			Optional<Usuario> usuario = null;
-			usuario = usuarioService.findByUserAndPassAndApiKey(username, username, apki);
+			//Optional<Usuario> usuario = null;
+			//usuario = usuarioService.findByUserAndPassAndApiKey(username, password, Optional.of(apikey));
 
-			if (usuario.isPresent()) {
+			//if (usuario.isPresent()) {
 
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-			}
+			//}
 
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
