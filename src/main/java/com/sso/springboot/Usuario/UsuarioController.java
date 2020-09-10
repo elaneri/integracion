@@ -23,6 +23,7 @@ public class UsuarioController {
  		
   		Optional<Usuario> usuario = usuarioService.findById(id);
  		if(usuario.isPresent()) {
+ 			usuario.get().setPassword("");
  			return ResponseEntity.ok(usuario.get());
  		}
  		else {
