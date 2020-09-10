@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="tenants")
 public class Tenant implements Serializable {
@@ -26,6 +28,7 @@ public class Tenant implements Serializable {
 	@Column(nullable=false,length=100)
 	private String descripcion;
 	
+	@JsonIgnore
 	@Column(nullable=false,length=30)
 	private String apiKey;
 	

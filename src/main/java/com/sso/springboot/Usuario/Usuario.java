@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sso.springboot.Tenant.Tenant;
 
 @Entity
@@ -26,6 +27,7 @@ public class Usuario implements Serializable  {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idUsuario;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="id_tenant",nullable=false)
 	private Tenant tenant;
@@ -40,6 +42,7 @@ public class Usuario implements Serializable  {
 	
 	private String usuario;
 	
+	@JsonIgnore
 	@Column(nullable=false, length=20)
 	private String password;
 	

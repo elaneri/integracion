@@ -22,12 +22,19 @@ public class JWTAuthenticationManager implements AuthenticationManager{
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
-		Optional<Usuario> usuario = userService.findByUserAndPass
+		String apk = (String)authentication.getDetails();
+		
+		if(apk == null ) {
+			throw new BadCredentialsException("Apk incorrecto.");
+		}
+		
+		Optional<Usuario> usuario = userService.findByUserAndPassAndApiKey
 							(authentication.getPrincipal().toString(),
-									authentication.getCredentials().toString());
+									authentication.getCredentials().toString(),apk);
 		
 		
-		if(usuario == null || !usuario.isPresent()) {
+		
+		if(usuario == null || !usuario.isPresent() || !usuario.get().isEnable())  {
 			throw new BadCredentialsException("Usuario o Password incorrectos.");
 		}
 		

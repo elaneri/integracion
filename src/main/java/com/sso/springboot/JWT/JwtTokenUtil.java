@@ -54,9 +54,10 @@ public class JwtTokenUtil implements Serializable {
 		// here you specify tokens, for that the expiration is ignored
 		return false;
 	}
-
-	public String generateToken(String user) {
-		Map<String, Object> claims = new HashMap<>();
+	
+	
+	
+	public String generateToken(String user, Map<String, Object> claims) {
 		return doGenerateToken(claims, user);
 	}
 

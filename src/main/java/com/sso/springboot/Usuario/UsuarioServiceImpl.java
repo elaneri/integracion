@@ -29,7 +29,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, Optional<String> apiKey){
+	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey){
 		
 		Optional<Usuario> usuario  = usuarioDAO.findByUsuarioAndPassword(user, pass);
 			
@@ -50,5 +50,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}else {
 			return null; 
 		}
+	}
+
+	@Override
+	public Usuario findByUserName(String user) {
+		
+		Usuario usuario  = usuarioDAO.findByUsuario(user);
+		
+		if(usuario!=null)
+			return usuario;
+		else
+			return null;
 	}
 }
