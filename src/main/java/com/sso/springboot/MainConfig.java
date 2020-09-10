@@ -18,7 +18,8 @@ public class MainConfig {
 		DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
 
 		try {
-			dbUri = new URI("    postgres://vkrwnqnuwnvaou:e1f53a7756d8c3e1ab9a9e29791720bcce1b5e3edbe8abbd272a5e48ed192987@ec2-54-197-254-117.compute-1.amazonaws.com:5432/d2ri9a64s9fttp");
+			
+			dbUri = new URI(System.getenv("JDBC_DATABASE_URL"));
 			
 			String username = dbUri.getUserInfo().split(":")[0];
 			String password = dbUri.getUserInfo().split(":")[1];

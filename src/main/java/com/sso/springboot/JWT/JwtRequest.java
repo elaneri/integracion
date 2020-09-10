@@ -9,15 +9,18 @@ public class JwtRequest implements Serializable {
 
 	private String username;
 	private String password;
+	private String apiKey;
+	
 
 	//default constructor for JSON Parsing
 	public JwtRequest()
 	{
 	}
 
-	public JwtRequest(String username, String password) {
+	public JwtRequest(String username, String password, String apiKey) {
 		this.setUsername(username);
 		this.setPassword(password);
+		this.setApiKey(apiKey);
 	}
 
 	public String getUsername() {
@@ -34,5 +37,13 @@ public class JwtRequest implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 }

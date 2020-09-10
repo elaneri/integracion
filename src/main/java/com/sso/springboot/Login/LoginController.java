@@ -14,7 +14,7 @@ import com.sso.springboot.Usuario.UsuarioServiceImpl;
 
 
 @RestController
-@RequestMapping("/Login")
+@RequestMapping("/Login2")
 public class LoginController {
 	
     @Autowired
@@ -39,9 +39,6 @@ public class LoginController {
 		}
 	}
  	
-	@RequestMapping({ "/isAlive" })
-	public String isAlive() {
-				return "test";
-	}
+
 	
 }
