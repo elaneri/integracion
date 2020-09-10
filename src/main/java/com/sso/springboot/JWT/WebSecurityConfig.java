@@ -24,12 +24,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+	/*
 	@Autowired
 	private UserDetailsService jwtUserDetailsService;
-
+*/
+	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 
+	/* Creo se puede sacar
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		// configure AuthenticationManager so that it knows from where to load
@@ -37,8 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// Use BCryptPasswordEncoder
 		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 	}
-
-	@Bean
+	
+		@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -48,6 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+*/
+
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {

@@ -1,44 +1,53 @@
 package com.sso.springboot.Login;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sso.springboot.Usuario.Usuario;
-import com.sso.springboot.Usuario.UsuarioServiceImpl;
+import com.sso.springboot.JWT.JwtRequest;
+import com.sso.springboot.JWT.JwtResponse;
+import com.sso.springboot.JWT.JwtTokenUtil;
 
 
 @RestController
-@RequestMapping("/Login2")
+@RequestMapping("/Login")
 public class LoginController {
 	
-    @Autowired
-	private UsuarioServiceImpl usuarioService;
     
-    // POST: http://localhost:1317/Login/user/pass/apiKey
+    @Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	
+    // POST: http://localhost:1317/Login
     @PostMapping
-	public ResponseEntity<Usuario> loginUsuario(@RequestBody String user,@RequestBody String pass,
-																			@RequestBody String apiKey) throws Exception{
+	public ResponseEntity<?> loginUsuario(@RequestBody JwtRequest authenticationRequest) throws Exception{
     	
     	try {
-    		Optional<Usuario> usuario = null;
-     		usuario = usuarioService.findByUserAndPassAndApiKey(user, pass, apiKey);
-     		
-        	if(usuario.isPresent()) {
-     			return ResponseEntity.ok(usuario.get());
-     		}else {
-     			return ResponseEntity.noContent().build();
-			}
-		} catch (Exception e) {
-			throw new Exception("Error en el inicio de sesión");
-		}
-	}
- 	
 
+    		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
+    								(authenticationRequest.getUsername(), 
+    										authenticationRequest.getPassword()));
+    		
+    		
+    		final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername());
+
+    		return ResponseEntity.ok(new JwtResponse(token));
+
+
+		} catch (DisabledException e) {
+			throw new Exception("USER_DISABLED", e);
+		} catch (BadCredentialsException e) {
+			throw new Exception("INVALID_CREDENTIALS", e);
+		}
+    }
 	
 }
