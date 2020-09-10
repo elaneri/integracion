@@ -1,7 +1,7 @@
 package com.sso.springboot.JWT;
 
-
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sso.springboot.Usuario.Usuario;
+import com.sso.springboot.Usuario.UsuarioServiceImpl;
 
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
-
+	@Autowired
+	private UsuarioServiceImpl usuarioService;
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -35,7 +38,8 @@ public class JwtAuthenticationController {
 	public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
 			throws Exception {
 
-		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword(), authenticationRequest.getApiKey());
+		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword(),
+				authenticationRequest.getApiKey());
 
 		final UserDetails userDetails = jwtInMemoryUserDetailsService
 				.loadUserByUsername(authenticationRequest.getUsername());
@@ -51,7 +55,16 @@ public class JwtAuthenticationController {
 		Objects.requireNonNull(apki);
 
 		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+			Optional<Usuario> usuario = null;
+			usuario = usuarioService.findByUserAndPassAndApiKey(username, username, apki);
+
+			if (usuario.isPresent()) {
+
+				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+			}
+
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
