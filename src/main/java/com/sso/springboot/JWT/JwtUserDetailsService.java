@@ -1,7 +1,6 @@
 package com.sso.springboot.JWT;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -17,19 +16,19 @@ import com.sso.springboot.Usuario.UsuarioService;
 public class JwtUserDetailsService implements UserDetailsService {
 	
 	@Autowired
-	private UsuarioService userService;
+	private UsuarioService ususarioService;
 	
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		Usuario us = userService.findByUserName(username);
+		Usuario usuario = ususarioService.findByUserName(username);
 		
-		if (us!=null && us.isEnable()) {
-			return new User(us.getUsuario(), us.getPassword(),
+		if (usuario!=null && usuario.isEnable()) {
+			return new User(usuario.getUsuario(), usuario.getPassword(),
 					new ArrayList<>());
 		} else {
-			throw new UsernameNotFoundException("User not found with username: " + username);
+			throw new UsernameNotFoundException("Usuario con encontrado: " + username);
 		}
 	}
 
