@@ -25,13 +25,12 @@ public class JWTAuthenticationManager implements AuthenticationManager{
 		String apk = (String)authentication.getDetails();
 		
 		if(apk == null ) {
-			throw new BadCredentialsException("Apk incorrecto.");
+			throw new BadCredentialsException("ApiKey incorrecta.");
 		}
 		
 		Optional<Usuario> usuario = userService.findByUserAndPassAndApiKey
 							(authentication.getPrincipal().toString(),
 									authentication.getCredentials().toString(),apk);
-		
 		
 		
 		if(usuario == null || !usuario.isPresent() || !usuario.get().isEnable())  {

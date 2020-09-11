@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonObject;
 import com.sso.springboot.JWT.JwtRequest;
 import com.sso.springboot.JWT.JwtResponse;
 import com.sso.springboot.JWT.JwtTokenUtil;
@@ -57,8 +56,6 @@ public class LoginController {
     		claims.put("userID",usuario.get().getIdUsuario());
 			final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);
 
-
-			
     		return ResponseEntity.ok(new JwtResponse(token));
 
 
