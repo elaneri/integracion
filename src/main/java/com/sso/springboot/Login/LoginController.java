@@ -54,7 +54,7 @@ public class LoginController {
     		
     		Map<String, Object> claims = new HashMap<>();
     		claims.put("userID",usuario.get().getIdUsuario());
-			final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);
+			final String token = "Bearer " + jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);
 
     		return ResponseEntity.ok(new JwtResponse(token));
 
