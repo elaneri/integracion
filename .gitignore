@@ -122,3 +122,5 @@ target/test-classes/singlesignon/test/singleSignOnTest.class
 .metadata/
 
 target/
+
+src/main/resources/application.properties
