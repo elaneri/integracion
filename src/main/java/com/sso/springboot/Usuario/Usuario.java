@@ -8,16 +8,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sso.springboot.Tenant.Tenant;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 @Entity
 @Table(name="usuarios")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Usuario implements Serializable  {
 	
 	private static final long serialVersionUID = -3359031128100969764L;
@@ -41,7 +45,7 @@ public class Usuario implements Serializable  {
 	private String usuario;
 	
 
-	@Column(nullable=false, length=20)
+	@Column(nullable=false, length=255)
 	private String password;
 	
 	@Column(nullable=false, length=30)
@@ -63,9 +67,9 @@ public class Usuario implements Serializable  {
 	@Column(nullable=true, length=8)
 	private String fechaBaja;
 	
-	@Lob
-	@Column(nullable=true)
-	private byte[] propiedades;
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
+	private JsonNode propiedades;
 	
 	
 	public Long getIdUsuario() {
@@ -164,11 +168,11 @@ public class Usuario implements Serializable  {
 		this.fechaBaja = fechaBaja;
 	}
 
-	public byte[] getPropiedades() {
+	public JsonNode getPropiedades() {
 		return propiedades;
 	}
 
-	public void setPropiedades(byte[] propiedades) {
+	public void setPropiedades(JsonNode propiedades) {
 		this.propiedades = propiedades;
 	}
 }
