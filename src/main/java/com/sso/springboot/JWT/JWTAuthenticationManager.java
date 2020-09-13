@@ -36,7 +36,7 @@ public class JWTAuthenticationManager implements AuthenticationManager{
 		if(usuario == null || !usuario.isPresent() || !usuario.get().isEnable())  {
 			throw new BadCredentialsException("Usuario o Password incorrectos.");
 		}
-		
+
 		return authentication;
 	}
 }

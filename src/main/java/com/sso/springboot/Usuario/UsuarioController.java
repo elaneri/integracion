@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,26 @@ public class UsuarioController {
 	
     //GET: http://localhost:1317/Usuarios/1
   	@RequestMapping(value="/{idUsuario}")
- 	public ResponseEntity<Usuario> getUsuarioByID(@PathVariable("idUsuario") Long id){		
+ 	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("Authorization") String token, @PathVariable("idUsuario") Long id){		
  		
+
+
+  		
+/*
+  		String name = Jwts.parser().setSigningKey("TEST").parseClaimsJws("HS512").getBody().get("name", String.class);
+  		
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+            		.setSigningKey("TEST")
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            
+            claims = null;
+        }
+        */
+        
   		Optional<Usuario> usuario = usuarioService.findById(id);
  		if(usuario.isPresent()) {
  			usuario.get().setPassword("");

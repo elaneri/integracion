@@ -10,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +39,9 @@ public class LoginController {
     @PostMapping
 	public ResponseEntity<?> loginUsuario(@RequestBody JwtRequest authenticationRequest) throws Exception{
     	
+
     	try {
-    		UsernamePasswordAuthenticationToken authToken = 	new UsernamePasswordAuthenticationToken
+    		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken
 			(authenticationRequest.getUsername(), 
 					authenticationRequest.getPassword());
     		
@@ -47,11 +50,8 @@ public class LoginController {
     		authenticationManager.authenticate(authToken);
     		
     		/* esta parte se ejecuta si authenticationManager esta ok*/
-    		Optional<Usuario> usuario = userService.findByUserAndPassAndApiKey
-					(authenticationRequest.getUsername(),
-							authenticationRequest.getPassword(),authenticationRequest.getApiKey());
-
-    		
+    		Optional<Usuario> usuario = userService.findByUserName(authenticationRequest.getUsername());
+					
     		Map<String, Object> claims = new HashMap<>();
     		claims.put("userID",usuario.get().getIdUsuario());
 			final String token = "Bearer " + jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);

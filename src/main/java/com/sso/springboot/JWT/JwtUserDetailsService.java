@@ -22,9 +22,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		Usuario usuario = ususarioService.findByUserName(username);
+		Usuario usuario = ususarioService.findByUserName(username).get();
 		
-		if (usuario!=null && usuario.isEnable()) {
+		if (usuario != null && usuario.isEnable()) {
 			return new User(usuario.getUsuario(), usuario.getPassword(),
 					new ArrayList<>());
 		} else {
