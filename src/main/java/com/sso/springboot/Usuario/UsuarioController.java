@@ -50,20 +50,17 @@ public class UsuarioController {
  		}	
  	}
   	
- 	// POST: http://localhost:1317/Usuarios
+ 	// POST: http://localhost:8080/Usuarios
 	@PostMapping
-	public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario){
+	public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) throws Exception{
 	
 		//TODO:codear validaciones
-		if (ValidacionUsuarioHelper.esUsuarioValido(usuario)) {
-			Usuario nuevoUsuario = usuarioService.save(usuario);
-			return ResponseEntity.ok(nuevoUsuario);
-		}else {
-			return ResponseEntity.noContent().build();
-		}
+		ValidacionUsuarioHelper.validarUsuario(usuario);
+		Usuario nuevoUsuario = usuarioService.save(usuario);
+		return ResponseEntity.ok(nuevoUsuario);
 	}
 	
-	//PUT: http://localhost:1317/Usuarios/Eliminar/1
+	//PUT: http://localhost:8080/Usuarios/Eliminar/1
  	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
     public ResponseEntity<Usuario> eliminarUsuario(@PathVariable("idUsuario") long idUsuario) {
  		
@@ -78,7 +75,7 @@ public class UsuarioController {
  		 }	
     }
  	 
-     //PUT: http://localhost:1317/Usuarios/1
+     //PUT: http://localhost:8080/Usuarios/1
   	 @RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
      public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("idUsuario") long idUsuario,
     		 													@RequestBody Usuario nuevoUsuario) {

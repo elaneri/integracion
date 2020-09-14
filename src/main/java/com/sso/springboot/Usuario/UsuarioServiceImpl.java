@@ -21,8 +21,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public Usuario save(Usuario usuario) {
-		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		//genero hash con Bcrypt
 		String encodedPassword = passwordEncoder.encode(usuario.getPassword().trim());
 		usuario.setPassword(encodedPassword);
 		return usuarioDAO.save(usuario);
@@ -37,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey){
 		
 		Optional<Usuario> usuario  = usuarioDAO.findByUsuario(user);
-				
+		//En la rutina hago el match del texto plano con la pass de la db (dado que no se puede comparar directamente de la BD)
 		if (usuario.isPresent() && new BCryptPasswordEncoder().matches(pass, usuario.get().getPassword().trim()) 
 												&& usuario.get().getTenant().getApiKey().equals(apiKey) && usuario.get().isEnable()) {
 			return usuario;
