@@ -1,7 +1,6 @@
 package com.sso.springboot.Messages;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+
 
 public enum JWTMessages {
 	
@@ -28,7 +27,5 @@ public enum JWTMessages {
 			return "{\"MSG\":\""+description+"\"}";
 	}
 	
-	public JSONObject toJson() throws JSONException {
-			return new JSONObject(this.toString());
-	}
+	
 }
