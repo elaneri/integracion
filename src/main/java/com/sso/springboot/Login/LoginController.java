@@ -12,6 +12,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +36,7 @@ public class LoginController {
 	private JwtTokenUtil jwtTokenUtil;
 	
     @PostMapping
-	public ResponseEntity<?> loginUsuario(@RequestBody JwtRequest authenticationRequest) throws Exception{
+	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,@RequestBody JwtRequest authenticationRequest) throws Exception{
     	
 
     	try {
@@ -43,7 +44,7 @@ public class LoginController {
 			(authenticationRequest.getUsername(), 
 					authenticationRequest.getPassword());
     		
-    		authToken.setDetails(authenticationRequest.getApiKey());
+    		authToken.setDetails(apk);
     		
     		authenticationManager.authenticate(authToken);
     		
