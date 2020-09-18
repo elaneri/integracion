@@ -1,5 +1,7 @@
 package com.sso.springboot.Usuario;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,54 +9,94 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sso.springboot.Claims.Claim;
+import com.sso.springboot.Claims.ClaimsDAO;
+import com.sso.springboot.Claims.ClaimsServiceImpl;
+import com.sso.springboot.Claims.UserClaims;
+import com.sso.springboot.Claims.UserClaimsDAO;
+import com.sso.springboot.Tenant.Tenant;
+import com.sso.springboot.Tenant.TenantServiceImpl;
+
 @Service
 @Transactional(readOnly = false)
 public class UsuarioServiceImpl implements UsuarioService {
-	
+
 	@Autowired
 	UsuarioDAO usuarioDAO;
-	
+
+	@Autowired
+	ClaimsDAO claimsDAO;
+
+	@Autowired
+	UserClaimsDAO userClaimsDAO;
+
+	@Autowired
+	private TenantServiceImpl tenantService;
+
+	@Autowired
+	private ClaimsServiceImpl claimsService;
+
 	@Transactional(readOnly = true)
 	public Optional<Usuario> findById(Long id) {
 		return usuarioDAO.findById(id);
 	}
 
 	@Override
-	public Usuario save(Usuario usuario) {
+	public Usuario save(Usuario usuario, String apk) {
+
+		Tenant t = tenantService.findByApikey(apk);
+		usuario.setTenant(t);
+
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		//genero hash con Bcrypt
-		String encodedPassword = passwordEncoder.encode(usuario.getPassword().trim());
+		// genero hash con Bcrypt
+		String encodedPassword = passwordEncoder.encode(usuario.getPassword());
 		usuario.setPassword(encodedPassword);
-		return usuarioDAO.save(usuario);
+		Usuario us = usuarioDAO.save(usuario);
+
+		Claim c = claimsService.findByNombre("client_id");
+
+		UserClaims userClaim = new UserClaims();
+
+		userClaim.setClaim(c);
+		userClaim.setClaimValue(String.valueOf(us.getIdUsuario()));
+
+		List<UserClaims> claims = new ArrayList<>();
+		claims.add(userClaim);
+		us.setUserClaims(claims);
+
+		userClaimsDAO.saveAll(claims);
+
+		return us;
 	}
-	
+
 	@Override
 	public Usuario update(Usuario usuario) {
 		return usuarioDAO.save(usuario);
 	}
-	
+
 	@Transactional(readOnly = true)
-	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey){
-		
-		Optional<Usuario> usuario  = usuarioDAO.findByUsuario(user);
-		//En la rutina hago el match del texto plano con la pass de la db (dado que no se puede comparar directamente de la BD)
-		if (usuario.isPresent() && new BCryptPasswordEncoder().matches(pass, usuario.get().getPassword().trim()) 
-												&& usuario.get().getTenant().getApiKey().equals(apiKey) && usuario.get().isEnable()) {
+	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey) {
+
+		Optional<Usuario> usuario = usuarioDAO.findByUsuario(user);
+		// En la rutina hago el match del texto plano con la pass de la db (dado
+		// que no se puede comparar directamente de la BD)
+		if (usuario.isPresent() && new BCryptPasswordEncoder().matches(pass, usuario.get().getPassword().trim())
+				&& usuario.get().getTenant().getApiKey().equals(apiKey) && usuario.get().isEnable()) {
 			return usuario;
-		}else {
-			return null; 
+		} else {
+			return null;
 		}
 	}
-	
+
 	@Override
 	public Optional<Usuario> findByUserName(String user) {
-		
-		Optional<Usuario> usuario  = usuarioDAO.findByUsuario(user);
-		
+
+		Optional<Usuario> usuario = usuarioDAO.findByUsuario(user);
+
 		if (usuario != null && usuario.isPresent() && usuario.get().isEnable()) {
 			return usuario;
-		}else {
-			return null; 
+		} else {
+			return null;
 		}
 	}
 }

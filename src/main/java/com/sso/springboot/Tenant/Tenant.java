@@ -30,7 +30,7 @@ public class Tenant implements Serializable {
 	
 	@JsonIgnore
 	@Column(nullable=false,length=30)
-	private String apiKey;
+	private String api_key;
 	
 	@Column(nullable=true,length=50)
 	private String callbackSuccess;
@@ -69,11 +69,11 @@ public class Tenant implements Serializable {
 	}
 
 	public String getApiKey() {
-		return apiKey;
+		return api_key;
 	}
 
 	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
+		this.api_key = apiKey;
 	}
 
 	public String getCallbackSuccess() {

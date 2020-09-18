@@ -4,6 +4,9 @@ public class ValidacionUsuarioHelper {
 
 	public static void validarUsuario(Usuario usuario) throws Exception{
 		
+		
+	
+		
 		//TODO:verificar porqué en postman no figura detalle de la excepcion...
 		if( usuario.getNombre().trim().equals(""))
 			throw new Exception("El nombre de usuario no puede estar vacío");

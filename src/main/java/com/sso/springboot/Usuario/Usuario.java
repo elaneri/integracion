@@ -1,7 +1,11 @@
 package com.sso.springboot.Usuario;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -16,62 +21,65 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sso.springboot.Claims.UserClaims;
 import com.sso.springboot.Tenant.Tenant;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 @Entity
-@Table(name="usuarios")
+@Table(name = "usuarios")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-public class Usuario implements Serializable  {
-	
+public class Usuario implements Serializable {
+
 	private static final long serialVersionUID = -3359031128100969764L;
 
 	@Id
-	@Column(name="id_usuario")
+	@Column(name = "id_usuario")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idUsuario;
-	
-	@ManyToOne
-	@JoinColumn(name="id_tenant",nullable=false)
-	private Tenant tenant;
-	
-	@Column(nullable=false,length=15)
-	private String nombre;
-	
-	@Column(nullable=false,length=15)
-	private String apellido;
-	
-	@Column(nullable=false, length=20, unique=true)
-	private String usuario;
-	
 
-	@Column(nullable=false, length=255)
+	@ManyToOne
+	@JoinColumn(name = "id_tenant", nullable = false)
+	private Tenant tenant;
+
+	@Column(nullable = false, length = 15)
+	private String nombre;
+
+	@Column(nullable = false, length = 15)
+	private String apellido;
+
+	@Column(nullable = false, length = 20, unique = true)
+	private String usuario;
+
+	@Column(nullable = false, length = 255)
 	private String password;
-	
-	@Column(nullable=false, length=30)
+
+	@Column(nullable = false, length = 30)
 	private String mail;
-	
-	@Column(nullable=false, length=8)
+
+	@Column(nullable = false, length = 8)
 	@NotNull(message = "Fecha de nacimiento: Campo requerido")
 	private String fecha_nacimiento;
-	
-	@Column(nullable=false, length=20)
+
+	@Column(nullable = false, length = 20)
 	private String telefono;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private boolean enable;
-	
-	@Column(nullable=false, length=8)
+
+	@Column(nullable = false, length = 8)
 	private String fechaAlta;
-	
-	@Column(nullable=true, length=8)
+
+	@Column(nullable = true, length = 8)
 	private String fechaBaja;
-	
+
 	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb")
 	private JsonNode propiedades;
-	
-	
+
+	@OneToMany
+	@JoinColumn(name = "id_user_claims", nullable = true)
+	private List<UserClaims> userClaims;
+
 	public Long getIdUsuario() {
 		return idUsuario;
 	}
@@ -119,7 +127,7 @@ public class Usuario implements Serializable  {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	
+
 	public String getFecha_nacimiento() {
 		return fecha_nacimiento;
 	}
@@ -127,7 +135,7 @@ public class Usuario implements Serializable  {
 	public void setFecha_nacimiento(String fecha_nacimiento) {
 		this.fecha_nacimiento = fecha_nacimiento;
 	}
-	
+
 	public String getTelefono() {
 		return telefono;
 	}
@@ -135,7 +143,7 @@ public class Usuario implements Serializable  {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-	
+
 	public Tenant getTenant() {
 		return tenant;
 	}
@@ -174,5 +182,24 @@ public class Usuario implements Serializable  {
 
 	public void setPropiedades(JsonNode propiedades) {
 		this.propiedades = propiedades;
+	}
+
+	public void setUserClaims(List<UserClaims> usrCl) {
+		this.userClaims = usrCl;
+	}
+
+	public Map<String, Object> getClaims() {
+
+		Map<String, Object> claims = new HashMap<>();
+
+		claims.put("iss", "sso");
+
+		for (UserClaims c : this.userClaims) {
+
+			claims.put(c.getClaim().getNombre(), c.getClaimValue());
+
+		}
+
+		return claims;
 	}
 }
