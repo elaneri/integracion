@@ -21,8 +21,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sso.springboot.Claims.UserClaims;
 import com.sso.springboot.Tenant.Tenant;
+import com.sso.springboot.UserClaims.UserClaims;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 @Entity
@@ -76,9 +76,6 @@ public class Usuario implements Serializable {
 	@Column(columnDefinition = "jsonb")
 	private JsonNode propiedades;
 
-	@OneToMany
-	@JoinColumn(name = "id_user_claims", nullable = true)
-	private List<UserClaims> userClaims;
 
 	public Long getIdUsuario() {
 		return idUsuario;
@@ -184,22 +181,8 @@ public class Usuario implements Serializable {
 		this.propiedades = propiedades;
 	}
 
-	public void setUserClaims(List<UserClaims> usrCl) {
-		this.userClaims = usrCl;
-	}
 
-	public Map<String, Object> getClaims() {
 
-		Map<String, Object> claims = new HashMap<>();
-
-		claims.put("iss", "sso");
-
-		for (UserClaims c : this.userClaims) {
-
-			claims.put(c.getClaim().getNombre(), c.getClaimValue());
-
-		}
-
-		return claims;
-	}
+	
+	
 }

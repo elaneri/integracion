@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sso.springboot.Error.JWTError;
+import com.sso.springboot.Messages.JWTError;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantServiceImpl;
 

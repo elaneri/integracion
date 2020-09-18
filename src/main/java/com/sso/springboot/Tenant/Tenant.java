@@ -18,6 +18,7 @@ public class Tenant implements Serializable {
 	private static final long serialVersionUID = -3395237410645768606L;
 
 	@Id
+	@JsonIgnore
 	@Column(name="id_tenant")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

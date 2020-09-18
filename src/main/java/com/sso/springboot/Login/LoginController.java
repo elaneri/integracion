@@ -1,6 +1,7 @@
 package com.sso.springboot.Login;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,50 +20,63 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sso.springboot.JWT.JwtRequest;
 import com.sso.springboot.JWT.JwtResponse;
 import com.sso.springboot.JWT.JwtTokenUtil;
+import com.sso.springboot.UserClaims.UserClaims;
+import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioService;
-
 
 @RestController
 @RequestMapping("/Login")
 public class LoginController {
+	private static final Object ISS = "SSO";
+
 	@Autowired
 	private UsuarioService userService;
-    
-    @Autowired
+	
+	@Autowired
+	private UserClaimsService userClaimService;
+	
+	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-    @PostMapping
-	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,@RequestBody JwtRequest authenticationRequest) throws Exception{
-    	
 
-    	try {
-    		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken
-			(authenticationRequest.getUsername(), 
-					authenticationRequest.getPassword());
-    		
-    		authToken.setDetails(apk);
-    		
-    		authenticationManager.authenticate(authToken);
-    		
-    		/* esta parte se ejecuta si authenticationManager esta ok*/
-    		Optional<Usuario> usuario = userService.findByUserName(authenticationRequest.getUsername());
+	@PostMapping
+	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,
+			@RequestBody JwtRequest authenticationRequest) throws Exception {
 
+		try {
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+					authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
+			authToken.setDetails(apk);
 
-			final String token = "Bearer " + jwtTokenUtil.generateToken(authenticationRequest.getUsername(), usuario.get().getClaims());
+			authenticationManager.authenticate(authToken);
 
-    		return ResponseEntity.ok(new JwtResponse(token));
+			/* esta parte se ejecuta si authenticationManager esta ok */
+			Optional<Usuario> usuario = userService.findByUserName(authenticationRequest.getUsername());
 
+			Map<String, Object> claims = new HashMap<>();
+			List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
+			
+			for (UserClaims c : userClaims) {
+
+				claims.put(c.getClaim().getNombre(), c.getClaimValue());
+
+			}
+			claims.put("client_id", usuario.get().getIdUsuario());
+			claims.put("iss", ISS);
+
+			final String token = "Bearer " + jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);
+
+			return ResponseEntity.ok(new JwtResponse(token));
 
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
-    }
-	
+	}
+
 }

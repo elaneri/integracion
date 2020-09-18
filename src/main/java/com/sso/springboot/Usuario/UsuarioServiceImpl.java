@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sso.springboot.Claims.Claim;
 import com.sso.springboot.Claims.ClaimsDAO;
 import com.sso.springboot.Claims.ClaimsServiceImpl;
-import com.sso.springboot.Claims.UserClaims;
-import com.sso.springboot.Claims.UserClaimsDAO;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantServiceImpl;
+import com.sso.springboot.UserClaims.UserClaims;
+import com.sso.springboot.UserClaims.UserClaimsDAO;
 
 @Service
 @Transactional(readOnly = false)
@@ -27,14 +27,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
 	ClaimsDAO claimsDAO;
 
-	@Autowired
-	UserClaimsDAO userClaimsDAO;
+
 
 	@Autowired
 	private TenantServiceImpl tenantService;
 
-	@Autowired
-	private ClaimsServiceImpl claimsService;
 
 	@Transactional(readOnly = true)
 	public Optional<Usuario> findById(Long id) {
@@ -50,21 +47,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		// genero hash con Bcrypt
 		String encodedPassword = passwordEncoder.encode(usuario.getPassword());
-		usuario.setPassword(encodedPassword);
+		usuario.setPassword(encodedPassword);		
 		Usuario us = usuarioDAO.save(usuario);
-
-		Claim c = claimsService.findByNombre("client_id");
-
-		UserClaims userClaim = new UserClaims();
-
-		userClaim.setClaim(c);
-		userClaim.setClaimValue(String.valueOf(us.getIdUsuario()));
-
-		List<UserClaims> claims = new ArrayList<>();
-		claims.add(userClaim);
-		us.setUserClaims(claims);
-
-		userClaimsDAO.saveAll(claims);
 
 		return us;
 	}

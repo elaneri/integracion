@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "claim")
 public class Claim implements Serializable {
@@ -45,4 +47,10 @@ public class Claim implements Serializable {
 
 		this.nombre = nombre;
 	}
+	
+	public Long getIdClaim() {
+
+		return idClaim;
+	}
+
 }
