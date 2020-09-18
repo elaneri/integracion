@@ -1,7 +1,5 @@
 package com.sso.springboot.Messages;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public enum JWTError {
 	
@@ -34,7 +32,4 @@ public enum JWTError {
 			return "{\"ERROR\":\""+description+"\"}";
 	}
 	
-	public JSONObject toJson() throws JSONException {
-			return new JSONObject(this.toString());
-	}
 }
