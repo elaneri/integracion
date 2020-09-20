@@ -21,11 +21,16 @@ public class UsuarioController {
 
 	// GET: http://localhost:1317/Usuarios/1
 	@RequestMapping(value = "/{idUsuario}")
-	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apik,
-			@PathVariable("idUsuario") Long id) {
+	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apk,
+			@PathVariable("idUsuario") Long id) throws Exception {
 
 		Optional<Usuario> usuario = usuarioService.findById(id);
 		if (usuario.isPresent()) {
+			if (!usuario.get().getTenant().getApiKey().equals(apk)) {
+				//TODO: ver si se puede ver a excepcion en postman..... 
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
+				throw new Exception("No se puede visualizar el usuario. Permiso denegado!");
+			}
 			usuario.get().setPassword("");
 			return ResponseEntity.ok(usuario.get());
 		} else {
@@ -38,24 +43,30 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
 
-		// TODO:codear validaciones
-
-		ValidacionUsuarioHelper.validarUsuario(usuario);
+		//TODO:Codear unicidad por nombreusuario + apikey
+		UsuarioHelper.validarUsuario(usuario);
 		Usuario nuevoUsuario = usuarioService.save(usuario,apk);
 		return ResponseEntity.ok(nuevoUsuario);
 	}
 
 	// PUT: http://localhost:8080/Usuarios/1
+	//Antes buscaba por idUsuario, ahora busca por nombreUsuario
+	//TODO: actualizar wiki... 
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> actualizarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario nuevoUsuario) {
+			@PathVariable("nombreUsuario") String nombreUsuario, @RequestBody Usuario usuarioModificado) throws Exception {
 
-		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
+		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(nombreUsuario);
 
-		if (usuario.isPresent()) {
-			usuario.get().setMail(nuevoUsuario.getMail().trim());
-			usuario.get().setTelefono(nuevoUsuario.getTelefono().trim());
-			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
+		if (usuarioExistente.isPresent()) {
+			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk)) {
+				//TODO: ver si se puede ver a excepcion en postman..... 
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
+				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
+			}
+			UsuarioHelper.validarUsuario(usuarioModificado);
+			
+			return ResponseEntity.ok(usuarioService.update(usuarioExistente.get(), usuarioModificado, apk));
 		} else {
 			return ResponseEntity.noContent().build();
 		}
@@ -64,11 +75,16 @@ public class UsuarioController {
 	// PUT: http://localhost:8080/Usuarios/Eliminar/1
 	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> eliminarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario) {
+			@PathVariable("idUsuario") long idUsuario) throws Exception {
 
 		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
 
 		if (usuario.isPresent()) {
+			if (!usuario.get().getTenant().getApiKey().equals(apk)) {
+				//TODO: ver si se puede ver a excepcion en postman..... 
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
+				throw new Exception("No se puede eliminar el usuario. Permiso denegado!");
+			}
 			usuario.get().setEnable(false);
 			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
 		} else {
