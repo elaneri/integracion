@@ -8,10 +8,8 @@ public interface UsuarioService {
 	
 	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey);
 	
-	public Usuario update(Usuario usuario);
+	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado, String apk);
 	
 	public Optional<Usuario> findByUserName(String user);
 
-	
-	
 }
