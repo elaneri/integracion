@@ -4,7 +4,7 @@ package com.sso.springboot.Messages;
 
 public enum JWTMessages {
 	
-	CLAIM_AGREGADA(0, "Se agrego el claim al usuario");
+	CLAIM_AGREGADA(0, "Se agrego el claim al usuario"), JWT_VALIDO(0, "El token es valido");
 
 	private final int code;
 	private final String description;

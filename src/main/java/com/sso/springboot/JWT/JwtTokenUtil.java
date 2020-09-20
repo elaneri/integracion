@@ -1,6 +1,5 @@
 package com.sso.springboot.JWT;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -14,14 +13,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtil  {
 
 	private static final long serialVersionUID = -2550185165626007488L;
 
 	public static final long JWT_TOKEN_VALIDITY = 20*60;
 
-	@Value("${PUBLIC_TOKEN_K}")
-	//@Value("TEST")
+	//@Value("${PUBLIC_TOKEN_K}")
+	@Value("50E25EC9B0517772A7EA5A4078A69E38AE0B48BDFFE1857D63933885829723C8")
 	private String secret;
 
 	public String getUsernameFromToken(String token) {
