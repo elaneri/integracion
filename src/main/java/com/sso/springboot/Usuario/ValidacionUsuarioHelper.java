@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class ValidacionUsuarioHelper {
 
-	public static void validarUsuario(Usuario usuario, AccionUsuario accionUsario) throws Exception{
+	public static void validarUsuario(Usuario usuario) throws Exception{
 		
 		//Validaciones a realizar
 		String rg_digitos = ".*\\d+.*";
@@ -20,13 +20,13 @@ public class ValidacionUsuarioHelper {
 		String rg_boolean = "[true|false]";
 		
 		//Agregue estas 2 validaciones porque las borraron
-		//Valida solo en alta que el usuario no esté vacio y sea mayor a 8 caracteres
+		//Valida que el usuario no esté vacio y supere 10 caracteres
 		//Validaciones usuario
-		if(accionUsario.equals(AccionUsuario.ALTA)  &&  usuario.getNombre().trim().equals(""))
+		if(usuario.getNombre().trim().equals(""))
 			throw new Exception("El nombre de usuario no puede estar vacío");
 		
-		if(accionUsario.equals(AccionUsuario.ALTA) &&  usuario.getNombre().trim().length() < 8)
-			throw new Exception("El nombre de usuario debe contener al menos 8 caracteres");
+		if(usuario.getNombre().trim().length() > 10)
+			throw new Exception("El nombre de usuario no puede contener más de 10 caracteres");
 		
 		
 		//Validaciones password		
