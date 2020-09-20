@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-public class ValidacionUsuarioHelper {
+public class UsuarioHelper {
 
 	public static void validarUsuario(Usuario usuario) throws Exception{
 		
@@ -111,6 +111,20 @@ public class ValidacionUsuarioHelper {
 			}
 
 		}
+	}
+	
+	public static Usuario modificar(Usuario usuarioExistente, Usuario usuarioNuevo) throws Exception{
+		
+		//TODO: no se toma en cuenta el usuario, el campo enabled, la fecha de alta, la fecha de baja.......
+		usuarioExistente.setNombre(usuarioNuevo.getNombre().trim());
+		usuarioExistente.setApellido(usuarioNuevo.getApellido().trim());
+		usuarioExistente.setPassword(usuarioNuevo.getPassword().trim());
+		usuarioExistente.setMail(usuarioNuevo.getMail().trim());
+		usuarioExistente.setFecha_nacimiento(usuarioNuevo.getFecha_nacimiento().trim());
+		usuarioExistente.setTelefono(usuarioNuevo.getTelefono().trim());
+		usuarioExistente.setPropiedades(usuarioNuevo.getPropiedades());
+		
+		return usuarioExistente;
 	}
 }
 		
