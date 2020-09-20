@@ -45,21 +45,6 @@ public class UsuarioController {
 		return ResponseEntity.ok(nuevoUsuario);
 	}
 
-	// PUT: http://localhost:8080/Usuarios/Eliminar/1
-	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
-	public ResponseEntity<Usuario> eliminarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario) {
-
-		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
-
-		if (usuario.isPresent()) {
-			usuario.get().setEnable(false);
-			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
-		} else {
-			return ResponseEntity.noContent().build();
-		}
-	}
-
 	// PUT: http://localhost:8080/Usuarios/1
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> actualizarUsuario(@RequestHeader("x-api-key") String apk,
@@ -70,6 +55,21 @@ public class UsuarioController {
 		if (usuario.isPresent()) {
 			usuario.get().setMail(nuevoUsuario.getMail().trim());
 			usuario.get().setTelefono(nuevoUsuario.getTelefono().trim());
+			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
+		} else {
+			return ResponseEntity.noContent().build();
+		}
+	}
+	
+	// PUT: http://localhost:8080/Usuarios/Eliminar/1
+	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> eliminarUsuario(@RequestHeader("x-api-key") String apk,
+			@PathVariable("idUsuario") long idUsuario) {
+
+		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
+
+		if (usuario.isPresent()) {
+			usuario.get().setEnable(false);
 			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
 		} else {
 			return ResponseEntity.noContent().build();
