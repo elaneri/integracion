@@ -21,16 +21,15 @@ import org.springframework.beans.factory.annotation.Value;
 @RunWith(JUnit4.class)
 public class singleSignOnTest {
 
-	// @Value("${JUNIT_TENANT}")
-	@Value("EMIEMIEMIEMIEMIEMI")
-	private String junittenant = "EMIEMIEMIEMIEMIEMI";
-	// private String appurl = "https://ssoia.herokuapp.com/";
-	private String appurl = "http://localhost:8080/";
-	private String expToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1eDBySElCNyIsImlzcyI6IlNTTyIsImV4cCI6MTYwMDYxMzU1MiwiaWF0IjoxNjAwNjEyMzQ0LCJjbGllbnRfaWQiOjZ9.AoQz6092wLmMTFzkJmr_txz32S0qyQue0xjLTuA6MkPZQ7f5SvJjxfio3geGqGJWxUzPdLDeOtSOBv2v95FgDg";
-
-
-	private String wrongToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2MDA2MDYyNzcsImV4cCI6MTYzMjE0MjI3NywiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJFbWFpbCI6Impyb2NrZXRAZXhhbXBsZS5jb20iLCJSb2xlIjpbIk1hbmFnZXIiLCJQcm9qZWN0IEFkbWluaXN0cmF0b3IiXX0.lAsNQL6BGa1wqlmyMmRLEZh4Oi0kDXTWuIr973PgPe0";
+	// @Value("EMIEMIEMIEMIEMIEMI")
+	@Value("${JUNIT_TENANT}")
+	private String junittenant;
 	
+	private String appurl = "https://ssoia.herokuapp.com/";
+//	private String appurl = "http://localhost:8080/";
+	private String expToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1eDBySElCNyIsImlzcyI6IlNTTyIsImV4cCI6MTYwMDYxMzU1MiwiaWF0IjoxNjAwNjEyMzQ0LCJjbGllbnRfaWQiOjZ9.AoQz6092wLmMTFzkJmr_txz32S0qyQue0xjLTuA6MkPZQ7f5SvJjxfio3geGqGJWxUzPdLDeOtSOBv2v95FgDg";
+	private String wrongToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJzc28iLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYwMDYyNDkxOCwiaWF0IjoxNjAwNjI0OTE4fQ.lEKbUUiCZgYXpdt7EKWKHXS1M0TZBkr0HYXq2YYZq5J_QvALWC0T-Wl5F5hrjtCBZp974HGPyQ0uZyeumj_TJw";
+
 	String user;
 	String pass;
 
@@ -44,7 +43,7 @@ public class singleSignOnTest {
 
 		postConnection.setRequestProperty("Content-Type", "application/json");
 		postConnection.setRequestProperty("x-api-key", junittenant);
-		if (token!=null)
+		if (token != null)
 			postConnection.setRequestProperty("Authorization", token);
 
 		postConnection.setDoOutput(true);
@@ -90,6 +89,37 @@ public class singleSignOnTest {
 		}
 	}
 
+	private void sendGet(String srvPath) throws Exception {
+
+		HttpURLConnection httpClient = (HttpURLConnection) new URL(appurl + srvPath).openConnection();
+
+		// optional default is GET
+		httpClient.setRequestMethod("GET");
+
+		// add request header
+		httpClient.setRequestProperty("User-Agent", "Mozilla/5.0");
+		httpClient.setRequestProperty("x-api-key", junittenant);
+
+		int responseCode = httpClient.getResponseCode();
+		System.out.println("\nSending 'GET' request to URL : " + appurl + srvPath);
+		System.out.println("Response Code : " + responseCode);
+
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(httpClient.getInputStream()))) {
+
+			StringBuilder response = new StringBuilder();
+			String line;
+
+			while ((line = in.readLine()) != null) {
+				response.append(line);
+			}
+
+			// print result
+			System.out.println(response.toString());
+
+		}
+
+	}
+
 	public void loginUserWrongToken() throws ClientProtocolException, IOException {
 
 		// When
@@ -102,9 +132,8 @@ public class singleSignOnTest {
 		assertTrue(true);
 
 	}
-	
-	
-	/*test crea un usuario y se loguea*/
+
+	/* test crea un usuario y se loguea */
 	@Test
 	public void testCreateUserAndLogin() throws ClientProtocolException, IOException {
 
@@ -112,7 +141,7 @@ public class singleSignOnTest {
 		user = rn.nextString();
 		pass = rn.nextString() + "@1";
 
-		 String POST_PARAMS_CREATE = "{ \"nombre\": \"" + user + "\",\"apellido\": \"JUNIT" + user + "\",\"usuario\": \""
+		String POST_PARAMS_CREATE = "{ \"nombre\": \"" + user + "\",\"apellido\": \"JUNIT" + user + "\",\"usuario\": \""
 				+ user + "\",\"password\": \"" + pass
 				+ "\", \"mail\": \"test@test.com\",\"fecha_nacimiento\": \"20200101\",\"telefono\": \"0\",\"enable\": true , \"fechaAlta\": \"20200101\",\"fechaBaja\": null,  \"propiedades\": null}";
 
@@ -120,14 +149,15 @@ public class singleSignOnTest {
 		sendPost("Usuarios", POST_PARAMS_CREATE, null);
 
 		// When
-		 String POST_PARAMS_LOGIN = "{\"username\": \"" + user + "\",\"password\": \"" + pass + "\"}";
+		String POST_PARAMS_LOGIN = "{\"username\": \"" + user + "\",\"password\": \"" + pass + "\"}";
 
-		 String token = sendPost("Login", POST_PARAMS_LOGIN, null);
+		String token = sendPost("Login", POST_PARAMS_LOGIN, null);
 
-		assertTrue(token.contains("token"));		
+		assertTrue(token.contains("token"));
 
 	}
-	/*consuta con token expirado*/
+
+	/* consuta con token expirado */
 	@Test
 	public void testInvalidToken() throws ClientProtocolException, IOException {
 
@@ -141,8 +171,7 @@ public class singleSignOnTest {
 		assertTrue(resp.equals("POST NOT WORKED"));
 
 	}
-	
-	
+
 	@Test
 	public void testWrongToken() throws ClientProtocolException, IOException {
 
@@ -156,7 +185,13 @@ public class singleSignOnTest {
 		assertTrue(resp.equals("POST NOT WORKED"));
 
 	}
-	
-	// Bearer
-	// eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1eDBySElCNyIsImlzcyI6IlNTTyIsImV4cCI6MTYwMDYxMzU1MiwiaWF0IjoxNjAwNjEyMzQ0LCJjbGllbnRfaWQiOjZ9.AoQz6092wLmMTFzkJmr_txz32S0qyQue0xjLTuA6MkPZQ7f5SvJjxfio3geGqGJWxUzPdLDeOtSOBv2v95FgDg
+
+	@Test
+	public void getClaimsToken() throws Exception {
+
+		sendGet("Claims/ValidClaims");
+
+		assertTrue(true);
+
+	}
 }

@@ -21,6 +21,7 @@ import com.sso.springboot.Messages.JWTMessages;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioServiceImpl;
 
+
 @RestController
 @RequestMapping("/Claims")
 public class UserClaimsController {
@@ -33,6 +34,16 @@ public class UserClaimsController {
 
 	@Autowired
 	private UserClaimsServiceImpl userClaimService;
+	
+	
+	@RequestMapping(value = "/ValidClaims", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Claim>> getUserClaims() throws Exception {
+		List<Claim> claims = claimService.getValidClaims();
+		return ResponseEntity.ok(claims);
+	}
+
+	
+	
 
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<UserClaims>> getUserClaims(@RequestHeader("x-api-key") String apk,
