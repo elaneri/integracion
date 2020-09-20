@@ -16,11 +16,9 @@ public class UsuarioHelper {
 		String rg_specialchar = ".*[.@#$%!.].*";
 		String rg_length = ".{5,40}";
 		String rg_email = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-		String rg_fecha = "\\d{6}";
-		String rg_boolean = "[true|false]";
+		String rg_fecha = "\\d{8}";
+		String rg_boolean = ".*true.*";
 		
-		//Agregue estas 2 validaciones porque las borraron
-		//Valida que el usuario no esté vacio y supere 10 caracteres
 		//Validaciones usuario
 		if(usuario.getNombre().trim().equals(""))
 			throw new Exception("El nombre de usuario no puede estar vacío");
@@ -63,8 +61,8 @@ public class UsuarioHelper {
 		
 		//TODO: testear sin funciona.....
 		//Validaciones enable
-		if( !Pattern.matches(rg_boolean, String.valueOf(usuario.isEnable())))
-			throw new Exception("El valor del campo enable es inválido");
+		//if( !Pattern.matches(rg_boolean, String.valueOf(usuario.isEnable())))
+		//	throw new Exception("El valor del campo enable es inválido");
 		
 		
 		//Validaciones fecha
@@ -95,22 +93,23 @@ public class UsuarioHelper {
 			}
 		}
 		
-		if( !usuario.getFechaBaja().equals("")) {
+		if( usuario.getFechaBaja()!=null) {
 			if(!Pattern.matches(rg_fecha, usuario.getFechaAlta())) 
-				throw new Exception("La fecha de baja tiene un formato inválido");				
-		}
+				throw new Exception("La fecha de baja tiene un formato inválido");	
 			
-			
-		if( Pattern.matches(rg_fecha, usuario.getFechaBaja())) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			Date date = new Date();
-			try {
-				date = format.parse(usuario.getFechaBaja());
-			} catch (ParseException e) {
-				throw new Exception("La fecha de baja es inválida");
+			if( Pattern.matches(rg_fecha, usuario.getFechaBaja())) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				try {
+					date = format.parse(usuario.getFechaBaja());
+				} catch (ParseException e) {
+					throw new Exception("La fecha de baja es inválida");
+				}
 			}
-
 		}
+			
+			
+		
 	}
 }
 		
