@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sso.springboot.Tenant.Tenant;
-import com.sso.springboot.Tenant.TenantServiceImpl;
-
 @RestController
 @RequestMapping("/Usuarios")
 public class UsuarioController {

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class ValidacionUsuarioHelper {
 
-	public static void validarUsuario(Usuario usuario) throws Exception{
+	public static void validarUsuario(Usuario usuario, AccionUsuario accionUsario) throws Exception{
 		
 		//Validaciones a realizar
 		String rg_digitos = ".*\\d+.*";
@@ -18,6 +18,16 @@ public class ValidacionUsuarioHelper {
 		String rg_email = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 		String rg_fecha = "\\d{6}";
 		String rg_boolean = "[true|false]";
+		
+		//Agregue estas 2 validaciones porque las borraron
+		//Valida solo en alta que el usuario no esté vacio y sea mayor a 8 caracteres
+		//Validaciones usuario
+		if(accionUsario.equals(AccionUsuario.ALTA)  &&  usuario.getNombre().trim().equals(""))
+			throw new Exception("El nombre de usuario no puede estar vacío");
+		
+		if(accionUsario.equals(AccionUsuario.ALTA) &&  usuario.getNombre().trim().length() < 8)
+			throw new Exception("El nombre de usuario debe contener al menos 8 caracteres");
+		
 		
 		//Validaciones password		
 		if (!Pattern.matches(rg_digitos, usuario.getPassword())) {
@@ -51,9 +61,10 @@ public class ValidacionUsuarioHelper {
 		if( !Pattern.matches(rg_email, usuario.getMail()))
 			throw new Exception("El email tiene un formato inválido");
 		
+		//TODO: testear sin funciona.....
 		//Validaciones enable
-		//if( !Pattern.matches(rg_boolean, usuario.getEnable()))
-			//throw new Exception("El valor del campo enable es inválido");
+		if( !Pattern.matches(rg_boolean, String.valueOf(usuario.isEnable())))
+			throw new Exception("El valor del campo enable es inválido");
 		
 		
 		//Validaciones fecha
