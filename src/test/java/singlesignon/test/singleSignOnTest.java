@@ -21,12 +21,10 @@ import org.springframework.beans.factory.annotation.Value;
 @RunWith(JUnit4.class)
 public class singleSignOnTest {
 
-	// @Value("EMIEMIEMIEMIEMIEMI")
 	@Value("${JUNIT_TENANT}")
 	private String junittenant;
 	
 	private String appurl = "https://ssoia.herokuapp.com/";
-//	private String appurl = "http://localhost:8080/";
 	private String expToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1eDBySElCNyIsImlzcyI6IlNTTyIsImV4cCI6MTYwMDYxMzU1MiwiaWF0IjoxNjAwNjEyMzQ0LCJjbGllbnRfaWQiOjZ9.AoQz6092wLmMTFzkJmr_txz32S0qyQue0xjLTuA6MkPZQ7f5SvJjxfio3geGqGJWxUzPdLDeOtSOBv2v95FgDg";
 	private String wrongToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJzc28iLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYwMDYyNDkxOCwiaWF0IjoxNjAwNjI0OTE4fQ.lEKbUUiCZgYXpdt7EKWKHXS1M0TZBkr0HYXq2YYZq5J_QvALWC0T-Wl5F5hrjtCBZp974HGPyQ0uZyeumj_TJw";
 
@@ -139,7 +137,7 @@ public class singleSignOnTest {
 
 		RandomString rn = new RandomString(8, ThreadLocalRandom.current());
 		user = rn.nextString();
-		pass = rn.nextString() + "@1";
+		pass = rn.nextString() + "@1A";
 
 		String POST_PARAMS_CREATE = "{ \"nombre\": \"" + user + "\",\"apellido\": \"JUNIT" + user + "\",\"usuario\": \""
 				+ user + "\",\"password\": \"" + pass
