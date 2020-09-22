@@ -22,4 +22,10 @@ public class TenantServiceImpl implements TenantService{
 		return tenantDAO.findByApyKey(apiKey);
 	}
 
+	@Override
+	public Tenant findByApiName(String nombre) {
+		// TODO Auto-generated method stub
+		return tenantDAO.findByApyName(nombre);
+	}
+
 }

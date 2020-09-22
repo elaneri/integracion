@@ -68,7 +68,7 @@ public class LoginController {
 			claims.put("client_id", usuario.get().getIdUsuario());
 			claims.put("iss", ISS);
 
-			final String token = "Bearer " + jwtTokenUtil.generateToken(authenticationRequest.getUsername(), claims);
+			final String token = "Bearer " + jwtTokenUtil.generateToken(usuario.get().getUsuario(), claims);
 
 			return ResponseEntity.ok(new JwtResponse(token));
 
