@@ -23,26 +23,26 @@ public class TenantFilter extends OncePerRequestFilter {
 	@Autowired
 	private TenantServiceImpl tenantService;
 
-//	@Value("testvalue")
-//	private String calbackurl;
-	
+	// @Value("testvalue")
+	// private String calbackurl;
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
 		String calbackurl = System.getenv("PUBLIC_LOGIN_URL");
-		final String requestKey = request.getHeader("x-api-key");
+		String requestKey = request.getHeader("x-api-key");
 		String referrer = request.getHeader("referer");
 
-		logger.warn("Callback referrer  " + referrer );
+		logger.warn("Callback referrer  " + referrer);
 
-		
-		if (calbackurl.compareTo(referrer)==0){
-			
-			logger.warn("Callback submit" );
+		if (referrer != null && referrer != null && calbackurl.compareTo(referrer) == 0) {
+
+			logger.warn("Callback submit");
 			chain.doFilter(request, response);
-			
-		}else{
+
+		} else {
 			Tenant t = tenantService.findByApikey(requestKey);
 
 			if (t != null) {
@@ -57,9 +57,7 @@ public class TenantFilter extends OncePerRequestFilter {
 				response.getWriter().write(JWTError.TENANT_API_KEY.toString());
 			}
 		}
-		
-		
-		
+
 	}
 
 }
