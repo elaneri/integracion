@@ -34,7 +34,7 @@ public class TenantFilter extends OncePerRequestFilter {
 		final String requestKey = request.getHeader("x-api-key");
 
 		String url = ((HttpServletRequest) request).getRequestURL().toString();
-		
+		logger.warn("Callback submit calbackurl ----" + calbackurl );
 		if (url.indexOf(calbackurl)>0){
 			
 			logger.warn("Callback submit" );
