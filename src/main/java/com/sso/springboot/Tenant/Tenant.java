@@ -33,10 +33,10 @@ public class Tenant implements Serializable {
 	@Column(nullable=false,length=30)
 	private String api_key;
 	
-	@Column(nullable=true,length=50)
+	@Column(nullable=true,length=200)
 	private String callbackSuccess;
 	
-	@Column(nullable=true,length=50)
+	@Column(nullable=true,length=200)
 	private String callbackError;
 	
 	@Column(nullable=false,length=8)

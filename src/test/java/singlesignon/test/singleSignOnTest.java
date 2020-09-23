@@ -21,8 +21,9 @@ import org.springframework.beans.factory.annotation.Value;
 @RunWith(JUnit4.class)
 public class singleSignOnTest {
 
+	 //@Value("EMIEMIEMIEMIEMIEMI")
 	@Value("${JUNIT_TENANT}")
-	private String junittenant="";
+	private String junittenant="EMIEMIEMIEMIEMIEMI";
 	
 	private String appurl = "https://ssoia.herokuapp.com/";
 //	private String appurl = "http://localhost:8080/";

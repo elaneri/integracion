@@ -24,8 +24,7 @@ public class TenantFilter extends OncePerRequestFilter {
 	private TenantServiceImpl tenantService;
 
 	
-	//@Value("${PUBLIC_LOGIN_URL}")
-	@Value("LoginCallback")
+	@Value("${PUBLIC_LOGIN_URL}")
 	private String calbackurl;
 	
 	
