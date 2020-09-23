@@ -35,9 +35,7 @@ public class TenantFilter extends OncePerRequestFilter {
 		String referrer = request.getHeader("referer");
 
 		logger.warn("Callback referrer  " + referrer );
-		logger.warn("Callback calbackurl  " + calbackurl );
-		logger.warn("Callback index of  " + calbackurl.indexOf(referrer) );
-		
+
 		
 		if (calbackurl.compareTo(referrer)==0){
 			

@@ -100,7 +100,7 @@ public class LoginCallback {
 		}
 		request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
-		ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackSuccess()==null)?CALLBACK_VALIDATOR:tn.getCallbackSuccess()));
+		ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackError()==null)?CALLBACK_VALIDATOR:tn.getCallbackError()));
 		mv.addObject("ERROR", Error);
 		
 		
