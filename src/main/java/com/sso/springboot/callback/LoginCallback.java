@@ -53,17 +53,18 @@ public class LoginCallback {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-//	@Value("${CALLBACK_VALIDATOR}")
+
+	// @Value("${CALLBACK_VALIDATOR}")
 	private static String CALLBACK_VALIDATOR = "/LoginCallbackValidator";
-	
+
 	@PostMapping("/LoginCallback")
-	public ModelAndView saveDetails(HttpServletRequest request, @RequestParam("usuario") String usuario,
+	public RedirectView saveDetails(HttpServletRequest request, @RequestParam("usuario") String usuario,
 			@RequestParam("password") String password, @RequestParam("tenant") String tenant, ModelMap modelMap)
 			throws Exception {
 		// write your code to save details
 		Tenant tn = tenantService.findByApiName(tenant);
 		String Error = "";
+		String url = "";
 		try {
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario, password);
 
@@ -88,30 +89,28 @@ public class LoginCallback {
 			final String token = "Bearer " + jwtTokenUtil.generateToken(user.get().getUsuario(), claims);
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-			
-			
-			
-			ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackSuccess()==null)?CALLBACK_VALIDATOR:tn.getCallbackSuccess()));
-			mv.addObject("TOKEN", toURI(token));
 
-			return mv;
+			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
+			url += "?TOKEN=" + toURI(token);
 
 		} catch (DisabledException e) {
-			Error =  e.getMessage();
+			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
+			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
 
 		} catch (BadCredentialsException e) {
-			Error = e.getMessage();
+			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
+			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
 
 		}
-		request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
-		ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackError()==null)?CALLBACK_VALIDATOR:tn.getCallbackError()));
-		mv.addObject("ERROR",  toURI(JWTError.USUARIO_INVALIDO.toString()));
-		
-		
-		return mv;
+		RedirectView redirectView = new RedirectView();
+		redirectView.setUrl(url);
+
+		return redirectView;
+
 	}
-	public  String toURI(String val) {
+
+	public String toURI(String val) {
 		try {
 			return URLEncoder.encode(val, StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException ex) {
