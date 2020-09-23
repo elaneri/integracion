@@ -1,5 +1,8 @@
 package com.sso.springboot.callback;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,8 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.sso.springboot.JWT.JwtTokenUtil;
+import com.sso.springboot.Messages.JWTError;
+import com.sso.springboot.Messages.JWTMessages;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantService;
 import com.sso.springboot.UserClaims.UserClaims;
@@ -87,7 +92,7 @@ public class LoginCallback {
 			
 			
 			ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackSuccess()==null)?CALLBACK_VALIDATOR:tn.getCallbackSuccess()));
-			mv.addObject("TOKEN", token);
+			mv.addObject("TOKEN", toURI(token));
 
 			return mv;
 
@@ -101,9 +106,16 @@ public class LoginCallback {
 		request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
 		ModelAndView mv = new ModelAndView("redirect:" + ((tn.getCallbackError()==null)?CALLBACK_VALIDATOR:tn.getCallbackError()));
-		mv.addObject("ERROR", Error);
+		mv.addObject("ERROR",  toURI(JWTError.USUARIO_INVALIDO.toString()));
 		
 		
 		return mv;
+	}
+	public  String toURI(String val) {
+		try {
+			return URLEncoder.encode(val, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex.getCause());
+		}
 	}
 }
