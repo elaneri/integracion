@@ -34,7 +34,11 @@ public class TenantFilter extends OncePerRequestFilter {
 		final String requestKey = request.getHeader("x-api-key");
 		String referrer = request.getHeader("referer");
 
-		logger.warn("Callback from  " + referrer );
+		logger.warn("Callback referrer  " + referrer );
+		logger.warn("Callback calbackurl  " + calbackurl );
+		logger.warn("Callback index of  " + calbackurl.indexOf(referrer) );
+		
+		
 		if (calbackurl.indexOf(referrer)>0){
 			
 			logger.warn("Callback submit" );
