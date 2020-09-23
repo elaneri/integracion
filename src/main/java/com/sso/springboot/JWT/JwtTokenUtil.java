@@ -19,9 +19,8 @@ public class JwtTokenUtil  {
 
 	public static final long JWT_TOKEN_VALIDITY = 20*60;
 
-	//@Value("${PUBLIC_TOKEN_K}")
-	@Value("50E25EC9B0517772A7EA5A4078A69E38AE0B48BDFFE1857D63933885829723C8")
-	private String secret;
+//	@Value("testvalue")
+//	private String secret;
 
 	public String getUsernameFromToken(String token) {
 		return getClaimFromToken(token, Claims::getSubject);
@@ -41,6 +40,7 @@ public class JwtTokenUtil  {
 	}
 
 	private Claims getAllClaimsFromToken(String token) {
+		String secret = System.getenv("PUBLIC_TOKEN_K");
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
@@ -61,7 +61,7 @@ public class JwtTokenUtil  {
 	}
 
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
-
+		String secret = System.getenv("PUBLIC_TOKEN_K");
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret).compact();
 	}

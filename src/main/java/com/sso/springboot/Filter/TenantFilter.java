@@ -23,16 +23,14 @@ public class TenantFilter extends OncePerRequestFilter {
 	@Autowired
 	private TenantServiceImpl tenantService;
 
-	
-	@Value("${PUBLIC_LOGIN_URL}")
-	private String calbackurl;
-	
+//	@Value("testvalue")
+//	private String calbackurl;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		String calbackurl = System.getenv("PUBLIC_LOGIN_URL");
 		final String requestKey = request.getHeader("x-api-key");
 
 		String url = ((HttpServletRequest) request).getRequestURL().toString();
