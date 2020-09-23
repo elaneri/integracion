@@ -90,7 +90,7 @@ public class LoginCallback {
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
-			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
+			url = ((tn.getCallbackSuccess()== null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
 			url += "?TOKEN=" + toURI(token);
 
 		} catch (DisabledException e) {
