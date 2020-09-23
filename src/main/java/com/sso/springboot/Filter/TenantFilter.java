@@ -33,9 +33,9 @@ public class TenantFilter extends OncePerRequestFilter {
 		String calbackurl = System.getenv("PUBLIC_LOGIN_URL");
 		final String requestKey = request.getHeader("x-api-key");
 		String referrer = request.getHeader("referer");
-		String url = ((HttpServletRequest) request).getRequestURL().toString();
+
 		logger.warn("Callback from  " + referrer );
-		if (calbackurl.indexOf(url)>0){
+		if (calbackurl.indexOf(referrer)>0){
 			
 			logger.warn("Callback submit" );
 			chain.doFilter(request, response);
