@@ -65,7 +65,7 @@ public class UsuarioController {
 
 		Optional<Usuario> usuarioExistente = usuarioService.findById(idUsuario);
 
-		if (usuarioExistente.isPresent()) {
+		if (usuarioExistente != null && usuarioExistente.isPresent()) {
 			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
 				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
@@ -85,7 +85,7 @@ public class UsuarioController {
 
 		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
 
-		if (usuario.isPresent()) {
+		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
 				throw new Exception("No se puede eliminar el usuario. Permiso denegado!");
