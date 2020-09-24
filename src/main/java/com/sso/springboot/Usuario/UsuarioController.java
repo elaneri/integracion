@@ -45,7 +45,7 @@ public class UsuarioController {
 
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(usuario.getUsuario().trim());
 		
-		if (usuarioExistente != null && usuarioExistente.isPresent() && usuario.getTenant().getApiKey().equals(apk.trim())) {
+		if (usuarioExistente != null && usuarioExistente.isPresent() && usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
 			throw new Exception("Usuario existente");
 		}
 		
