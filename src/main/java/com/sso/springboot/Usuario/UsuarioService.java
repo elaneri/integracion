@@ -12,6 +12,8 @@ public interface UsuarioService {
 	
 	public Usuario delete(Usuario usuario, String apk);
 	
+	public Usuario activate(Usuario usuario, String apk);
+	
 	public Optional<Usuario> findByUserName(String user);
 
 }

@@ -59,6 +59,18 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		return user;
 	}
+	
+	@Override
+	public Usuario active(Usuario usuario, String apk) {
+
+		usuario.setEnable(true);
+		usuario.setFechaBaja(null);
+	
+		Usuario user = usuarioDAO.save(usuario);
+
+		return user;
+	}
+	
 
 	@Override
 	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado, String apk) {

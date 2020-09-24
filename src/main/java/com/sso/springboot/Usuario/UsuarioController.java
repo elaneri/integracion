@@ -34,7 +34,7 @@ public class UsuarioController {
 			usuario.get().setPassword("???");
 			return ResponseEntity.ok(usuario.get());
 		} else {
-			return ResponseEntity.noContent().build();
+			throw new Exception("Usuario no encontrado");
 		}
 	}
 
@@ -43,7 +43,7 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
 
-		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(usuario.getNombre().trim());
+		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(usuario.getUsuario().trim());
 		
 		if (usuarioExistente != null && usuarioExistente.isPresent() && usuario.getTenant().getApiKey().equals(apk.trim())) {
 			throw new Exception("Usuario existente");
@@ -55,6 +55,9 @@ public class UsuarioController {
 		usuario.setFechaAlta(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
 		
 		Usuario nuevoUsuario = usuarioService.save(usuario,apk);
+		
+		nuevoUsuario.setPassword("???");
+		
 		return ResponseEntity.ok(nuevoUsuario);
 	}
 
@@ -71,8 +74,11 @@ public class UsuarioController {
 				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 			}
 			UsuarioHelper.validarUsuario(usuarioModificado);
+
+			Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado, apk);
+			usuario.setPassword("???");
 			
-			return ResponseEntity.ok(usuarioService.update(usuarioExistente.get(), usuarioModificado, apk));
+			return ResponseEntity.ok(usuario);
 		} else {
 			throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 		}
@@ -90,7 +96,33 @@ public class UsuarioController {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
 				throw new Exception("No se puede eliminar el usuario. Permiso denegado!");
 			}
-			return ResponseEntity.ok(usuarioService.delete(usuario.get(), apk));
+			
+			Usuario usuarioEliminado = usuarioService.delete(usuario.get(), apk);
+			usuarioEliminado.setPassword("???");
+			
+			return ResponseEntity.ok(usuarioEliminado);
+		} else {
+			throw new Exception("No se ha encontrado el usuario");
+		}
+	}
+	
+	// PUT: http://localhost:8080/Usuarios/Habilitar/1
+	@RequestMapping(value = "/Habilitar/{idUsuario}", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> habilitarUsuario(@RequestHeader("x-api-key") String apk,
+			@PathVariable("idUsuario") long idUsuario) throws Exception {
+
+		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
+
+		if (usuario != null && usuario.isPresent()) {
+			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
+				throw new Exception("No se puede habilitar el usuario. Permiso denegado!");
+			}
+				
+			Usuario usuarioHabilitado = usuarioService.activate(usuario.get(), apk);
+			usuarioHabilitado.setPassword("???");
+				
+			return ResponseEntity.ok(usuarioHabilitado);
 		} else {
 			throw new Exception("No se ha encontrado el usuario");
 		}
