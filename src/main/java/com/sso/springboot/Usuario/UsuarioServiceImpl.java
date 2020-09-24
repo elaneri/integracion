@@ -61,7 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	@Override
-	public Usuario active(Usuario usuario, String apk) {
+	public Usuario activate(Usuario usuario, String apk) {
 
 		usuario.setEnable(true);
 		usuario.setFechaBaja(null);
