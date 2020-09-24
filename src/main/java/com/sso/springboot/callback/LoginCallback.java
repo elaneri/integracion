@@ -86,12 +86,12 @@ public class LoginCallback {
 			claims.put("client_id", user.get().getIdUsuario());
 			claims.put("iss", tn.getNombre());
 
-			final String token = "Bearer " + jwtTokenUtil.generateToken(user.get().getUsuario(), claims);
+			final String token = jwtTokenUtil.generateToken(user.get().getUsuario(), claims);
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
 			url = ((tn.getCallbackSuccess()== null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
-			url += "?TOKEN=" + toURI(token);
+			url += "?TOKEN=" + token;
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
