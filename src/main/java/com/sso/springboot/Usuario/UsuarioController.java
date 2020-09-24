@@ -1,5 +1,6 @@
 package com.sso.springboot.Usuario;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,11 @@ public class UsuarioController {
 
 		Optional<Usuario> usuario = usuarioService.findById(id);
 		if (usuario.isPresent()) {
-			if (!usuario.get().getTenant().getApiKey().equals(apk)) {
-				//TODO: ver si se puede ver a excepcion en postman..... 
+			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
-				throw new Exception("No se puede visualizar el usuario. Permiso denegado!");
+				throw new Exception("Error al visualizar el usuario. Permiso denegado!");
 			}
-			usuario.get().setPassword("");
+			usuario.get().setPassword("???");
 			return ResponseEntity.ok(usuario.get());
 		} else {
 			return ResponseEntity.noContent().build();
@@ -43,32 +43,38 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
 
-		//TODO:Codear unicidad por nombreusuario + apikey
+		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(usuario.getNombre().trim());
+		
+		if (usuarioExistente != null && usuarioExistente.isPresent() && usuario.getTenant().getApiKey().equals(apk.trim())) {
+			throw new Exception("Usuario existente");
+		}
+		
 		UsuarioHelper.validarUsuario(usuario);
+		
+		Date fechaActual = new Date();
+		usuario.setFechaAlta(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
+		
 		Usuario nuevoUsuario = usuarioService.save(usuario,apk);
 		return ResponseEntity.ok(nuevoUsuario);
 	}
 
 	// PUT: http://localhost:8080/Usuarios/1
-	//Antes buscaba por idUsuario, ahora busca por nombreUsuario
-	//TODO: actualizar wiki... 
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> actualizarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("nombreUsuario") String nombreUsuario, @RequestBody Usuario usuarioModificado) throws Exception {
+			@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario usuarioModificado) throws Exception {
 
-		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(nombreUsuario);
+		Optional<Usuario> usuarioExistente = usuarioService.findById(idUsuario);
 
 		if (usuarioExistente.isPresent()) {
-			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk)) {
-				//TODO: ver si se puede ver a excepcion en postman..... 
-				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
+			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
+				//validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
 				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 			}
 			UsuarioHelper.validarUsuario(usuarioModificado);
 			
 			return ResponseEntity.ok(usuarioService.update(usuarioExistente.get(), usuarioModificado, apk));
 		} else {
-			return ResponseEntity.noContent().build();
+			throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 		}
 	}
 	
@@ -80,15 +86,13 @@ public class UsuarioController {
 		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
 
 		if (usuario.isPresent()) {
-			if (!usuario.get().getTenant().getApiKey().equals(apk)) {
-				//TODO: ver si se puede ver a excepcion en postman..... 
+			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
 				throw new Exception("No se puede eliminar el usuario. Permiso denegado!");
 			}
-			usuario.get().setEnable(false);
-			return ResponseEntity.ok(usuarioService.save(usuario.get(), apk));
+			return ResponseEntity.ok(usuarioService.delete(usuario.get(), apk));
 		} else {
-			return ResponseEntity.noContent().build();
+			throw new Exception("No se ha encontrado el usuario");
 		}
 	}
 }

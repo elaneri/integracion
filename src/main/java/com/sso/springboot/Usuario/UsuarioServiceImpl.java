@@ -1,7 +1,6 @@
 package com.sso.springboot.Usuario;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sso.springboot.Claims.Claim;
 import com.sso.springboot.Claims.ClaimsDAO;
-import com.sso.springboot.Claims.ClaimsServiceImpl;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantServiceImpl;
-import com.sso.springboot.UserClaims.UserClaims;
-import com.sso.springboot.UserClaims.UserClaimsDAO;
 
 @Service
 @Transactional(readOnly = false)
@@ -26,7 +21,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Autowired
 	ClaimsDAO claimsDAO;
-
 
 
 	@Autowired
@@ -48,9 +42,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 		// genero hash con Bcrypt
 		String encodedPassword = passwordEncoder.encode(usuario.getPassword());
 		usuario.setPassword(encodedPassword);		
-		Usuario us = usuarioDAO.save(usuario);
+		Usuario user = usuarioDAO.save(usuario);
 
-		return us;
+		return user;
+	}
+	
+	@Override
+	public Usuario delete(Usuario usuario, String apk) {
+
+		Date fechaActual = new Date();
+		
+		usuario.setEnable(false);
+		usuario.setFechaBaja(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
+	
+		Usuario user = usuarioDAO.save(usuario);
+
+		return user;
 	}
 
 	@Override

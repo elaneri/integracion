@@ -17,7 +17,6 @@ public class UsuarioHelper {
 		String rg_length = ".{5,40}";
 		String rg_email = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 		String rg_fecha = "\\d{8}";
-		String rg_boolean = ".*true.*";
 		
 		//Validaciones usuario
 		if(usuario.getNombre().trim().equals(""))
@@ -55,14 +54,8 @@ public class UsuarioHelper {
 			throw new Exception("La contraseña del usuario debe contener al menos 8 caracteres");	
 		
 		//Validaciones email
-		
 		if( !Pattern.matches(rg_email, usuario.getMail()))
 			throw new Exception("El email tiene un formato inválido");
-		
-		//TODO: testear sin funciona.....
-		//Validaciones enable
-		//if( !Pattern.matches(rg_boolean, String.valueOf(usuario.isEnable())))
-		//	throw new Exception("El valor del campo enable es inválido");
 		
 		
 		//Validaciones fecha
@@ -71,6 +64,7 @@ public class UsuarioHelper {
 		
 		if( Pattern.matches(rg_fecha, usuario.getFecha_nacimiento())) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+			
 			Date date = new Date();
 			try {
 				date = format.parse(usuario.getFecha_nacimiento());
@@ -81,7 +75,7 @@ public class UsuarioHelper {
 			
 
 		if( !Pattern.matches(rg_fecha, usuario.getFechaAlta()))
-			throw new Exception("La fecha de nacimiento tiene un formato inválido");
+			throw new Exception("La fecha de alta tiene un formato inválido");
 		
 		if( Pattern.matches(rg_fecha, usuario.getFechaAlta())) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -107,9 +101,11 @@ public class UsuarioHelper {
 				}
 			}
 		}
-			
-			
+	}
+	
+	public static String convertirFechaAFormatoJapones(Date fecha) {
 		
+		return new SimpleDateFormat("yyyyMMdd").format(fecha);
 	}
 }
 		

@@ -77,5 +77,4 @@ public class LoginController {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
 	}
-
 }
