@@ -1,5 +1,8 @@
 package com.sso.springboot.Messages;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public enum JWTError {
 	
@@ -32,5 +35,4 @@ public enum JWTError {
 	public String toString() {
 			return "{\"ERROR\":\""+description+"\"}";
 	}
-	
 }

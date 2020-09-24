@@ -12,24 +12,22 @@ import java.net.URL;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.http.client.ClientProtocolException;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.beans.factory.annotation.Value;
 
 @RunWith(JUnit4.class)
 public class singleSignOnTest {
 
-	 //@Value("EMIEMIEMIEMIEMIEMI")
-	@Value("${JUNIT_TENANT}")
-	private String junittenant="EMIEMIEMIEMIEMIEMI";
-	
-	private String appurl = "https://ssoia.herokuapp.com/";
+
+	private String junittenant;
+
+	 private String appurl = "https://ssoia.herokuapp.com/";
 //	private String appurl = "http://localhost:8080/";
 	private String expToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1eDBySElCNyIsImlzcyI6IlNTTyIsImV4cCI6MTYwMDYxMzU1MiwiaWF0IjoxNjAwNjEyMzQ0LCJjbGllbnRfaWQiOjZ9.AoQz6092wLmMTFzkJmr_txz32S0qyQue0xjLTuA6MkPZQ7f5SvJjxfio3geGqGJWxUzPdLDeOtSOBv2v95FgDg";
 	private String wrongToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJzc28iLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYwMDYyNDkxOCwiaWF0IjoxNjAwNjI0OTE4fQ.lEKbUUiCZgYXpdt7EKWKHXS1M0TZBkr0HYXq2YYZq5J_QvALWC0T-Wl5F5hrjtCBZp974HGPyQ0uZyeumj_TJw";
-
 	String user;
 	String pass;
 
@@ -89,7 +87,7 @@ public class singleSignOnTest {
 		}
 	}
 
-	private void sendGet(String srvPath) throws Exception {
+	private int sendGet(String srvPath, String token) throws Exception {
 
 		HttpURLConnection httpClient = (HttpURLConnection) new URL(appurl + srvPath).openConnection();
 
@@ -99,6 +97,7 @@ public class singleSignOnTest {
 		// add request header
 		httpClient.setRequestProperty("User-Agent", "Mozilla/5.0");
 		httpClient.setRequestProperty("x-api-key", junittenant);
+		httpClient.setRequestProperty("Authorization", token);
 
 		int responseCode = httpClient.getResponseCode();
 		System.out.println("\nSending 'GET' request to URL : " + appurl + srvPath);
@@ -117,7 +116,7 @@ public class singleSignOnTest {
 			System.out.println(response.toString());
 
 		}
-
+		return responseCode;
 	}
 
 	public void loginUserWrongToken() throws ClientProtocolException, IOException {
@@ -135,7 +134,7 @@ public class singleSignOnTest {
 
 	/* test crea un usuario y se loguea */
 	@Test
-	public void testCreateUserAndLogin() throws ClientProtocolException, IOException {
+	public void testCreateUserAndLogin() throws Exception {
 
 		RandomString rn = new RandomString(8, ThreadLocalRandom.current());
 		user = rn.nextString();
@@ -153,45 +152,64 @@ public class singleSignOnTest {
 
 		String token = sendPost("Login", POST_PARAMS_LOGIN, null);
 
+		JSONObject jt = new JSONObject(token);
+	
+		testRefreshToken(jt.getString("token"));
+		sendGet("Claims/ValidClaims", jt.getString("token"));
 		assertTrue(token.contains("token"));
 
 	}
 
 	/* consuta con token expirado */
 	@Test
-	public void testInvalidToken() throws ClientProtocolException, IOException {
+	public void testInvalidToken()  {
 
 		// When
 		String POST_PARAMS = "{}";
 
 		System.out.println(POST_PARAMS);
 
-		String resp = sendPost("isAlive", POST_PARAMS, expToken);
+		int resp = 0;
+		try {
+			resp = sendGet("JWT/isAlive", expToken);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			assertTrue(true);
+		}
 
-		assertTrue(resp.equals("POST NOT WORKED"));
+		
 
 	}
 
-	@Test
-	public void testWrongToken() throws ClientProtocolException, IOException {
+	public void testRefreshToken(String validToken) throws Exception {
 
 		// When
 		String POST_PARAMS = "{}";
 
 		System.out.println(POST_PARAMS);
 
-		String resp = sendPost("isAlive", POST_PARAMS, wrongToken);
+		int resp = sendGet("JWT/refresh", validToken);
+		assertTrue(resp == 200);
 
-		assertTrue(resp.equals("POST NOT WORKED"));
+	}
+
+	 @Test
+	public void testWrongToken() {
+
+		// When
+		String POST_PARAMS = "{}";
+
+		System.out.println(POST_PARAMS);
+
+		try {
+			sendGet("JWT/isAlive", wrongToken);
+		} catch (Exception e) {
+			assertTrue(true);
+
+		}
 
 	}
 
-	@Test
-	public void getClaimsToken() throws Exception {
+	 
 
-		sendGet("Claims/ValidClaims");
-
-		assertTrue(true);
-
-	}
 }

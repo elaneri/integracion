@@ -28,7 +28,6 @@ import com.sso.springboot.Usuario.UsuarioService;
 @RestController
 @RequestMapping("/Login")
 public class LoginController {
-	private static final Object ISS = "SSO";
 
 	@Autowired
 	private UsuarioService userService;
@@ -66,9 +65,9 @@ public class LoginController {
 
 			}
 			claims.put("client_id", usuario.get().getIdUsuario());
-			claims.put("iss", ISS);
+			claims.put("iss", JwtTokenUtil.ISS);
 
-			final String token = "Bearer " + jwtTokenUtil.generateToken(usuario.get().getUsuario(), claims);
+			final String token = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(usuario.get().getUsuario(), claims);
 
 			return ResponseEntity.ok(new JwtResponse(token));
 
