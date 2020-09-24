@@ -1,4 +1,4 @@
-package com.sso.springboot.callback;
+package com.sso.springboot.Callback;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,15 +19,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.sso.springboot.JWT.JwtTokenUtil;
 import com.sso.springboot.Messages.JWTError;
-import com.sso.springboot.Messages.JWTMessages;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantService;
 import com.sso.springboot.UserClaims.UserClaims;
