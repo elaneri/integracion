@@ -17,6 +17,7 @@ public class UsuarioHelper {
 		String rg_length = ".{5,40}";
 		String rg_email = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 		String rg_fecha = "\\d{8}";
+		String rg_tel = "^[0-9]+$";
 		
 		//Validaciones usuario
 		if(usuario.getNombre().trim().equals(""))
@@ -57,6 +58,12 @@ public class UsuarioHelper {
 		if( !Pattern.matches(rg_email, usuario.getMail()))
 			throw new Exception("El email tiene un formato inválido");
 		
+		//Validaciones tel
+		if( !Pattern.matches(rg_tel, usuario.getTelefono()))
+			throw new Exception("El teléfono tiene un formato inválido");
+		
+		if( usuario.getTelefono().trim().length() < 8 || usuario.getTelefono().trim().length() > 15)
+			throw new Exception("El teléfono debe contener entre 8 y 15 caracteres sin guiones u otro caracter");	
 		
 		//Validaciones fecha
 		if( !Pattern.matches(rg_fecha, usuario.getFecha_nacimiento()))
