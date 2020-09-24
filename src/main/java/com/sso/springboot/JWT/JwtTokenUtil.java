@@ -1,5 +1,6 @@
 package com.sso.springboot.JWT;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,14 +57,15 @@ public class JwtTokenUtil  {
 	
 	
 	
-	public String generateToken(String user, Map<String, Object> claims) {
+	public String generateToken(String user, Map<String, Object> claims) throws UnsupportedEncodingException {
 		return doGenerateToken(claims, user);
 	}
 
-	private String doGenerateToken(Map<String, Object> claims, String subject) {
+	private String doGenerateToken(Map<String, Object> claims, String subject) throws UnsupportedEncodingException {
 		String secret = System.getenv("PUBLIC_TOKEN_K");
+		
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret.getBytes("UTF-8")).compact();
 	}
 
 	public Boolean canTokenBeRefreshed(String token) {
