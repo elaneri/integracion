@@ -10,6 +10,8 @@ public interface UsuarioService {
 	
 	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado, String apk);
 	
+	public Usuario delete(Usuario usuario, String apk);
+	
 	public Optional<Usuario> findByUserName(String user);
 
 }

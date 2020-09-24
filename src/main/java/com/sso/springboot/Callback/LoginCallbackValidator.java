@@ -1,4 +1,4 @@
-package com.sso.springboot.callback;
+package com.sso.springboot.Callback;
 
 import java.util.Map;
 

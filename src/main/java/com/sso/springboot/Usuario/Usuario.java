@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -51,7 +50,6 @@ public class Usuario implements Serializable {
 	private String mail;
 
 	@Column(nullable = false, length = 8)
-	@NotNull(message = "Fecha de nacimiento: Campo requerido")
 	private String fecha_nacimiento;
 
 	@Column(nullable = false, length = 20)
