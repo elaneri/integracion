@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sso.springboot.Tenant.Tenant;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -32,6 +33,7 @@ public class Usuario implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "id_tenant", nullable = false)
+	@JsonIgnore
 	private Tenant tenant;
 
 	@Column(nullable = false, length = 15)
