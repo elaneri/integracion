@@ -64,6 +64,11 @@ public class UserClaimsController {
 
 		Optional<Usuario> us = usuarioService.findById(idUsuario);
 
+		if (claim.getValor().length() > 10) {
+			throw new Exception("El tamaño del valor del claim no puede superar los 10 caracteres"); 
+		}
+		
+		
 		if (us.isPresent()) {
 			Claim cl = claimService.findByNombre(claim.getNombre());
 
