@@ -41,7 +41,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		// genero hash con Bcrypt
 		String encodedPassword = passwordEncoder.encode(usuario.getPassword());
-		usuario.setPassword(encodedPassword);		
+		usuario.setPassword(encodedPassword);
+		usuario.setEnable(true);
 		Usuario user = usuarioDAO.save(usuario);
 
 		return user;

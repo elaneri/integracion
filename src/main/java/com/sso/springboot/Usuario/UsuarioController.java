@@ -49,10 +49,10 @@ public class UsuarioController {
 			throw new Exception("Usuario existente");
 		}
 		
-		UsuarioHelper.validarUsuario(usuario);
-		
 		Date fechaActual = new Date();
 		usuario.setFechaAlta(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
+		
+		UsuarioHelper.validarUsuario(usuario);
 		
 		Usuario nuevoUsuario = usuarioService.save(usuario,apk);
 		
@@ -115,7 +115,7 @@ public class UsuarioController {
 
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
-				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere habilitar....
 				throw new Exception("No se puede habilitar el usuario. Permiso denegado!");
 			}
 				
