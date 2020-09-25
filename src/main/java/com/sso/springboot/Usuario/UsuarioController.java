@@ -43,7 +43,7 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
 
-		Optional<Usuario> usuarioExistente = usuarioService.findByUserName(usuario.getUsuario().trim());
+		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
 		
 		if (usuarioExistente != null && usuarioExistente.isPresent() && usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
 			throw new Exception("Usuario existente");

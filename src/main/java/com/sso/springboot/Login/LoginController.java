@@ -54,7 +54,7 @@ public class LoginController {
 			authenticationManager.authenticate(authToken);
 
 			/* esta parte se ejecuta si authenticationManager esta ok */
-			Optional<Usuario> usuario = userService.findByUserName(authenticationRequest.getUsername());
+			Optional<Usuario> usuario = userService.findByUserNameAndTenant(authenticationRequest.getUsername(),apk);
 
 			Map<String, Object> claims = new HashMap<>();
 			List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
@@ -66,8 +66,8 @@ public class LoginController {
 			}
 			claims.put("client_id", usuario.get().getIdUsuario());
 			claims.put("iss", JwtTokenUtil.ISS);
-
-			final String token = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(usuario.get().getUsuario(), claims);
+			String idUsuario = String.valueOf(usuario.get().getIdUsuario());
+			final String token = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(idUsuario, claims);
 
 			return ResponseEntity.ok(new JwtResponse(token));
 

@@ -69,7 +69,7 @@ public class LoginCallback {
 			authenticationManager.authenticate(authToken);
 
 			/* esta parte se ejecuta si authenticationManager esta ok */
-			Optional<Usuario> user = userService.findByUserName(usuario);
+			Optional<Usuario> user = userService.findByUserNameAndTenant(usuario, tn.getApiKey());
 
 			Map<String, Object> claims = new HashMap<>();
 			List<UserClaims> userClaims = userClaimService.findClaimsForUser(user.get());
@@ -81,8 +81,9 @@ public class LoginCallback {
 			}
 			claims.put("client_id", user.get().getIdUsuario());
 			claims.put("iss", tn.getNombre());
+			String idUsuario = String.valueOf(user.get().getIdUsuario());
 
-			final String token = jwtTokenUtil.generateToken(user.get().getUsuario(), claims);
+			final String token = jwtTokenUtil.generateToken(idUsuario, claims);
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 

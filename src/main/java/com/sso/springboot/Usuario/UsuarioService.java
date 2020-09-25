@@ -14,6 +14,10 @@ public interface UsuarioService {
 	
 	public Usuario activate(Usuario usuario, String apk);
 	
-	public Optional<Usuario> findByUserName(String user);
+	public Optional<Usuario> findByUserNameAndTenant(String user, String apiKey);
+	
+	public Optional<Usuario> findByUserIdAndTenant(String userId);
+	
+
 
 }

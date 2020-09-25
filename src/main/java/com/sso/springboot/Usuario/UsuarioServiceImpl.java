@@ -88,8 +88,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Transactional(readOnly = true)
 	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey) {
+		
+		Tenant ten = tenantService.findByApikey(apiKey);
+		
 
-		Optional<Usuario> usuario = usuarioDAO.findByUsuario(user);
+		Optional<Usuario> usuario = usuarioDAO.findByUsuarioAndTenant(user, ten);
 		// En la rutina hago el match del texto plano con la pass de la db (dado
 		// que no se puede comparar directamente de la BD)
 		if (usuario.isPresent() && new BCryptPasswordEncoder().matches(pass, usuario.get().getPassword().trim())
@@ -101,9 +104,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Optional<Usuario> findByUserName(String user) {
+	public Optional<Usuario> findByUserNameAndTenant(String user, String apiKey) {
+		
+		Tenant ten = tenantService.findByApikey(apiKey);
 
-		Optional<Usuario> usuario = usuarioDAO.findByUsuario(user);
+		Optional<Usuario> usuario = usuarioDAO.findByUsuarioAndTenant(user, ten);
 
 		if (usuario != null && usuario.isPresent() && usuario.get().isEnable()) {
 			return usuario;
@@ -111,4 +116,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 			return null;
 		}
 	}
+
+	@Override
+	public Optional<Usuario> findByUserIdAndTenant(String userId) {
+		// TODO Auto-generated method stub
+		Long usId = Long.valueOf(userId);
+		return usuarioDAO.findById(usId);
+	}
+
+	
 }

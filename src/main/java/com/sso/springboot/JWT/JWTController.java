@@ -45,12 +45,11 @@ public class JWTController {
 	}
 	
 	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
-	public ResponseEntity<?> refreshToken(@RequestHeader("x-api-key") String apk,
-			@RequestHeader("Authorization") String token) throws Exception {
+	public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String token) throws Exception {
 		
 		
 		token = token.replace(JwtTokenUtil.BEARER, "");
-		Optional<Usuario> usuario = userService.findByUserName(jwtTokenUtil.getUsernameFromToken(token));
+		Optional<Usuario> usuario = userService.findByUserIdAndTenant(jwtTokenUtil.getUserIdFromToken(token));
 	
 		Map<String, Object> claims = new HashMap<>();
 		List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
@@ -62,8 +61,9 @@ public class JWTController {
 		}
 		claims.put("client_id", usuario.get().getIdUsuario());
 		claims.put("iss", JwtTokenUtil.ISS);
+		String idUsuario = String.valueOf(usuario.get().getIdUsuario());
 
-		final String newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(usuario.get().getUsuario(), claims);
+		final String newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(idUsuario, claims);
 
 		return ResponseEntity.ok(new JwtResponse(newtoken));
 	}
