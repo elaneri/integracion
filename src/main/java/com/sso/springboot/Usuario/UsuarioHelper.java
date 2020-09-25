@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class UsuarioHelper {
 
-	public static void validarUsuario(Usuario usuario) throws Exception{
+	public static void validarUsuario(Usuario usuario, AccionUsuario accion) throws Exception{
 		
 		//Validaciones a realizar
 		String rg_digitos = ".*\\d+.*";
@@ -32,13 +32,18 @@ public class UsuarioHelper {
 		if(usuario.getApellido().trim().length() > 15)
 			throw new Exception("El apellido del usuario no puede contener más de 15 caracteres");
 		
-		if(usuario.getUsuario().trim().equals(""))
-			throw new Exception("El usuario no puede estar vacío");
+		if (accion.equals(AccionUsuario.ALTA)) {
+			if(usuario.getUsuario().trim().equals(""))
+				throw new Exception("El usuario no puede estar vacío");
+			
+			if(usuario.getUsuario().trim().length() > 10)
+				throw new Exception("El usuario no puede contener más de 10 caracteres");
+		}
 		
-		if(usuario.getUsuario().trim().length() > 10)
-			throw new Exception("El usuario no puede contener más de 10 caracteres");
+		//Validaciones password	
+		if( usuario.getPassword().equals(""))
+			throw new Exception("La password del usuario no puede estar vacía");
 		
-		//Validaciones password		
 		if (!Pattern.matches(rg_digitos, usuario.getPassword())) {
 			throw new IllegalArgumentException ("El password debe tener al menos un número");
 		}
@@ -58,9 +63,6 @@ public class UsuarioHelper {
 		if (!Pattern.matches(rg_length, usuario.getPassword())) {
 			throw new Exception("El password debe tener al menos 8 caracteres y como máximo 15");
 		}				
-		
-		if( usuario.getPassword().equals(""))
-			throw new Exception("La contraseña del usuario no puede estar vacía");
 		
 		//Validaciones email
 		if(usuario.getMail().trim().length() > 30)
@@ -82,13 +84,18 @@ public class UsuarioHelper {
 		
 		if( Pattern.matches(rg_fecha, usuario.getFecha_nacimiento())) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			
+			format.setLenient(false);
 			Date date = new Date();
 			try {
 				date = format.parse(usuario.getFecha_nacimiento());
 			} catch (ParseException e) {
 				throw new Exception("La fecha de nacimiento es inválida");
 			}
+		}
+		
+		Date fechaActual = new Date();
+		if(convertirFechaAFormatoJapones(fechaActual).compareTo(usuario.getFecha_nacimiento()) < 0) {
+			throw new Exception("La fecha de nacimiento no puede ser mayor a la fecha actual");
 		}
 	}
 	

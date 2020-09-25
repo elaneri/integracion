@@ -52,7 +52,7 @@ public class UsuarioController {
 		Date fechaActual = new Date();
 		usuario.setFechaAlta(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
 		
-		UsuarioHelper.validarUsuario(usuario);
+		UsuarioHelper.validarUsuario(usuario, AccionUsuario.ALTA);
 		
 		Usuario nuevoUsuario = usuarioService.save(usuario,apk);
 		
@@ -73,7 +73,7 @@ public class UsuarioController {
 				//validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
 				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 			}
-			UsuarioHelper.validarUsuario(usuarioModificado);
+			UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
 
 			Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado, apk);
 			usuario.setPassword("???");
