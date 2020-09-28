@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/Usuarios")
@@ -25,16 +27,19 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apk,
 			@PathVariable("idUsuario") Long id) throws Exception {
 
+
 		Optional<Usuario> usuario = usuarioService.findById(id);
 		if (usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
-				throw new Exception("Error al visualizar el usuario. Permiso denegado!");
+				throw new ResponseStatusException(
+						HttpStatus.FORBIDDEN, "Error al visualizar el usuario. Permiso denegado!");
 			}
 			usuario.get().setPassword("???");
 			return ResponseEntity.ok(usuario.get());
 		} else {
-			throw new Exception("Usuario no encontrado");
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
 	}
 
@@ -46,7 +51,9 @@ public class UsuarioController {
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
 		
 		if (usuarioExistente != null && usuarioExistente.isPresent() && usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
-			throw new Exception("Usuario existente");
+			throw new ResponseStatusException(
+					HttpStatus.CONFLICT, "Usuario existente");
+			
 		}
 		
 		Date fechaActual = new Date();
@@ -80,7 +87,8 @@ public class UsuarioController {
 			
 			return ResponseEntity.ok(usuario);
 		} else {
-			throw new Exception("No se puede modificar el usuario. Permiso denegado!");
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
 	}
 	
@@ -94,7 +102,8 @@ public class UsuarioController {
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
-				throw new Exception("No se puede eliminar el usuario. Permiso denegado!");
+				throw new ResponseStatusException(
+						HttpStatus.FORBIDDEN, "No se puede eliminar el usuario. Permiso denegado!");
 			}
 			
 			Usuario usuarioEliminado = usuarioService.delete(usuario.get(), apk);
@@ -102,7 +111,8 @@ public class UsuarioController {
 			
 			return ResponseEntity.ok(usuarioEliminado);
 		} else {
-			throw new Exception("No se ha encontrado el usuario");
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
 	}
 	
@@ -116,7 +126,8 @@ public class UsuarioController {
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere habilitar....
-				throw new Exception("No se puede habilitar el usuario. Permiso denegado!");
+				throw new ResponseStatusException(
+						HttpStatus.FORBIDDEN, "No se puede habilitar el usuario. Permiso denegado!");
 			}
 				
 			Usuario usuarioHabilitado = usuarioService.activate(usuario.get(), apk);
@@ -124,7 +135,8 @@ public class UsuarioController {
 				
 			return ResponseEntity.ok(usuarioHabilitado);
 		} else {
-			throw new Exception("No se ha encontrado el usuario");
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
 	}
 }
