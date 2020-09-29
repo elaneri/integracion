@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,8 +52,10 @@ public class LoginCallback {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
-	// @Value("${CALLBACK_VALIDATOR}")
 	private static String CALLBACK_VALIDATOR = "/LoginCallbackValidator";
+
+	private static final Logger LOG = LoggerFactory.getLogger(LoginCallback.class);
+
 
 	@PostMapping("/LoginCallback")
 	public RedirectView saveDetails(HttpServletRequest request, @RequestParam("usuario") String usuario,
@@ -86,17 +90,22 @@ public class LoginCallback {
 			final String token = jwtTokenUtil.generateToken(idUsuario, claims);
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-
-			url = ((tn.getCallbackSuccess()== null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
+			url = ((tn.getCallbackSuccess() == null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
 			url += "?TOKEN=" + token;
+
+			LOG.info("Token genrado para usuario = " + usuario);
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
 			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
+			LOG.info(e.getMessage());
+
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
 			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
+
+			LOG.info(e.getMessage());
 
 		}
 

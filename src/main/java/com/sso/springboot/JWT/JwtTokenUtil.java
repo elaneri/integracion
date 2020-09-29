@@ -43,6 +43,8 @@ public class JwtTokenUtil  {
 
 	private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
 		String secret = System.getenv("PUBLIC_TOKEN_K");
+		if (secret==null)secret="TEST";
+
 		return Jwts.parser().setSigningKey(secret.getBytes("UTF-8")).parseClaimsJws(token).getBody();
 	}
 
@@ -64,6 +66,7 @@ public class JwtTokenUtil  {
 
 	private String doGenerateToken(Map<String, Object> claims, String userId) throws UnsupportedEncodingException {
 		String secret =System.getenv("PUBLIC_TOKEN_K");
+		if (secret==null)secret="TEST";
 		
 		return Jwts.builder().setClaims(claims).setSubject(userId).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret.getBytes("UTF-8")).compact();

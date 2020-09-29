@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
+	private static final Logger LOG = LoggerFactory.getLogger(JwtRequestFilter.class);
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -41,12 +44,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
 			} catch (IllegalArgumentException e) {
-				System.out.println("No se ha podido obtener el Token JWT");
+				LOG.warn("No se ha podido obtener el Token JWT");
 			} catch (ExpiredJwtException e) {
-				System.out.println("El Token JWT ha expirado");
+				LOG.warn("El Token JWT ha expirado");
+
+				
 			}
 		} else {
-			logger.warn("El Token JWT no comienza con la palabra Bearer");
+			
+			LOG.warn("El Token JWT no comienza con la palabra Bearer");
+
+			
 		}
 
 		//Once we get the token validate it.
@@ -66,6 +74,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
+		
+
+		
 		chain.doFilter(request, response);
 	}
 

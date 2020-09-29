@@ -3,6 +3,8 @@ package com.sso.springboot.Usuario;
 import java.util.Date;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.sso.springboot.JWT.JwtUserDetailsService;
+
 @RestController
 @RequestMapping("/Usuarios")
 public class UsuarioController {
 
 	@Autowired
 	private UsuarioServiceImpl usuarioService;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(UsuarioController.class);
 
 	// GET: http://localhost:1317/Usuarios/1
 	@RequestMapping(value = "/{idUsuario}")
@@ -32,12 +38,15 @@ public class UsuarioController {
 		if (usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
+				LOG.warn("Error al visualizar el usuario. Permiso denegado!");
 				throw new ResponseStatusException(
 						HttpStatus.FORBIDDEN, "Error al visualizar el usuario. Permiso denegado!");
 			}
 			usuario.get().setPassword("???");
 			return ResponseEntity.ok(usuario.get());
 		} else {
+			LOG.warn( "Usuario no encontrado");
+
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -51,6 +60,7 @@ public class UsuarioController {
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
 		
 		if (usuarioExistente != null && usuarioExistente.isPresent() && usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
+			LOG.warn("Usuario existente");
 			throw new ResponseStatusException(
 					HttpStatus.CONFLICT, "Usuario existente");
 			
@@ -78,6 +88,8 @@ public class UsuarioController {
 		if (usuarioExistente != null && usuarioExistente.isPresent()) {
 			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
+				LOG.warn("No se puede modificar el usuario. Permiso denegado!");
+
 				throw new Exception("No se puede modificar el usuario. Permiso denegado!");
 			}
 			UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
@@ -87,6 +99,10 @@ public class UsuarioController {
 			
 			return ResponseEntity.ok(usuario);
 		} else {
+			
+			LOG.warn("Usuario no encontrado");
+
+			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -101,6 +117,8 @@ public class UsuarioController {
 
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
+				LOG.warn( "No se puede eliminar el usuario. Permiso denegado!");
+
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
 				throw new ResponseStatusException(
 						HttpStatus.FORBIDDEN, "No se puede eliminar el usuario. Permiso denegado!");
@@ -111,6 +129,10 @@ public class UsuarioController {
 			
 			return ResponseEntity.ok(usuarioEliminado);
 		} else {
+			
+			LOG.warn( "Usuario no encontrado");
+
+			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -125,6 +147,8 @@ public class UsuarioController {
 
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
+				LOG.warn("No se puede habilitar el usuario. Permiso denegado!");
+
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere habilitar....
 				throw new ResponseStatusException(
 						HttpStatus.FORBIDDEN, "No se puede habilitar el usuario. Permiso denegado!");
@@ -135,6 +159,9 @@ public class UsuarioController {
 				
 			return ResponseEntity.ok(usuarioHabilitado);
 		} else {
+			LOG.warn("Usuario no encontrado");
+
+			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}

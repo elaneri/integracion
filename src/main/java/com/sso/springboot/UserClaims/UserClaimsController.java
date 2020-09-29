@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sso.springboot.Claims.Claim;
 import com.sso.springboot.Claims.ClaimsServiceImpl;
+import com.sso.springboot.Login.LoginController;
 import com.sso.springboot.Messages.JWTError;
 import com.sso.springboot.Messages.JWTMessages;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioServiceImpl;
-
 
 @RestController
 @RequestMapping("/Claims")
@@ -35,15 +37,13 @@ public class UserClaimsController {
 	@Autowired
 	private UserClaimsServiceImpl userClaimService;
 	
-	
+	private static final Logger LOG = LoggerFactory.getLogger(UserClaimsController.class);
+
 	@RequestMapping(value = "/ValidClaims", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Claim>> getUserClaims() throws Exception {
 		List<Claim> claims = claimService.getValidClaims();
 		return ResponseEntity.ok(claims);
 	}
-
-	
-	
 
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<UserClaims>> getUserClaims(@RequestHeader("x-api-key") String apk,
@@ -65,10 +65,10 @@ public class UserClaimsController {
 		Optional<Usuario> us = usuarioService.findById(idUsuario);
 
 		if (claim.getValor().length() > 10) {
-			throw new Exception("El tamaño del valor del claim no puede superar los 10 caracteres"); 
+			LOG.warn("El tamaño del valor del claim no puede superar los 10 caracteres");
+			throw new Exception("El tamaño del valor del claim no puede superar los 10 caracteres");
 		}
-		
-		
+
 		if (us.isPresent()) {
 			Claim cl = claimService.findByNombre(claim.getNombre());
 
@@ -96,6 +96,8 @@ public class UserClaimsController {
 			}
 
 		}
+		
+		LOG.warn(JWTError.USUARIO_INVALIDO.toString());
 		return ResponseEntity.ok(JWTError.USUARIO_INVALIDO.toString());
 	}
 }

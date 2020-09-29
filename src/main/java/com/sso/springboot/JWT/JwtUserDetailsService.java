@@ -3,6 +3,8 @@ package com.sso.springboot.JWT;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Autowired
 	UsuarioDAO usuarioDAO;
 
-	
+	private static final Logger LOG = LoggerFactory.getLogger(JwtUserDetailsService.class);
+
 	
 	@Override
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -36,7 +39,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 			return new User(usId, usuario.get().getPassword(),
 					new ArrayList<>());
 		} else {
-			throw new UsernameNotFoundException("Usuario con encontrado: " + userId);
+			LOG.warn("Usuario no encontrado: " + userId);
+
+			
+			throw new UsernameNotFoundException("Usuario no encontrado: " + userId);
 		}
 	}
 
