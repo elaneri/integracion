@@ -84,7 +84,7 @@ public class UsuarioController {
 			if (!usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
 				//validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
 				LOG.warn(SSOError.MODIFICAR_USUARIO_DENEGADO.toString());
-				throw new Exception(SSOError.MODIFICAR_USUARIO_DENEGADO.toString());
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOError.MODIFICAR_USUARIO_DENEGADO.toString());
 			}
 			
 			UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
