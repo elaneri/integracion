@@ -21,7 +21,9 @@ public enum SSOError {
 	HABILITAR_USUARIO_DENEGADO(16,"No se puede habilitar el usuario. Permiso denegado!"),
 	USUARIO_DESHABILITADO(17,"Usuario deshabilitado"),
 	USUARIO_PASSWORD_INCORRECTO(18,"Usuario o Password incorrectos"),
-	CREDENCIALES_INVALIDAS(19,"Credenciales inválidas");
+	CREDENCIALES_INVALIDAS(19,"Credenciales inválidas"),
+	CLAIM_VALOR_10_CARACTERES(20,"El tamaño del valor del claim no puede superar los 10 caracteres");
+	
 	
 	private final int code;
 	private final String description;

@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sso.springboot.Claims.Claim;
 import com.sso.springboot.Claims.ClaimsServiceImpl;
-import com.sso.springboot.Login.LoginController;
-import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Messages.JWTMessages;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioServiceImpl;
 
@@ -51,9 +50,7 @@ public class UserClaimsController {
 		Optional<Usuario> us = usuarioService.findById(idUsuario);
 		List<UserClaims> cls = new ArrayList<>();
 		if (us.isPresent()) {
-
 			cls = userClaimService.findClaimsForUser(us.get());
-
 		}
 		return ResponseEntity.ok(cls);
 	}
@@ -65,8 +62,8 @@ public class UserClaimsController {
 		Optional<Usuario> us = usuarioService.findById(idUsuario);
 
 		if (claim.getValor().length() > 10) {
-			LOG.warn("El tamaño del valor del claim no puede superar los 10 caracteres");
-			throw new Exception("El tamaño del valor del claim no puede superar los 10 caracteres");
+			LOG.warn(SSOError.CLAIM_VALOR_10_CARACTERES.toString());
+			throw new Exception(SSOError.CLAIM_VALOR_10_CARACTERES.toString());
 		}
 
 		if (us.isPresent()) {
@@ -94,7 +91,6 @@ public class UserClaimsController {
 				return ResponseEntity.ok(SSOError.CLAIM_NO_VALIDA.toString());
 
 			}
-
 		}
 		
 		LOG.warn(SSOError.USUARIO_INVALIDO.toString());
