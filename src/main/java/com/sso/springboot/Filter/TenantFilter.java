@@ -14,8 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.sso.springboot.Callback.LoginCallback;
-import com.sso.springboot.Messages.JWTError;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantServiceImpl;
 
@@ -42,29 +41,18 @@ public class TenantFilter extends OncePerRequestFilter {
 
 		if (referrer != null && referrer != null && calbackurl.compareTo(referrer) == 0) {
 			LOG.info("Callback submit");
-
 			chain.doFilter(request, response);
-
 		} else {
 			Tenant t = tenantService.findByApikey(requestKey);
-
 			if (t != null) {
 				LOG.info("Key Validada para Tenant  " + t.getNombre());
-
 				chain.doFilter(request, response);
-
 			} else {
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.getWriter().write(JWTError.TENANT_API_KEY.toString());
-				
-				
-				
-				
+				response.getWriter().write(SSOError.TENANT_API_KEY.toString());
 			}
 		}
-
 	}
-
 }

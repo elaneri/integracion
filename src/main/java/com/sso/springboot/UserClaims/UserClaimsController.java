@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sso.springboot.Claims.Claim;
 import com.sso.springboot.Claims.ClaimsServiceImpl;
 import com.sso.springboot.Login.LoginController;
-import com.sso.springboot.Messages.JWTError;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Messages.JWTMessages;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioServiceImpl;
@@ -87,17 +87,17 @@ public class UserClaimsController {
 
 					return ResponseEntity.ok(JWTMessages.CLAIM_AGREGADA.toString());
 				} else {
-					return ResponseEntity.ok(JWTError.CLAIM_DUPLICADA.toString());
+					return ResponseEntity.ok(SSOError.CLAIM_DUPLICADA.toString());
 				}
 
 			} else {
-				return ResponseEntity.ok(JWTError.CLAIM_NO_VALIDA.toString());
+				return ResponseEntity.ok(SSOError.CLAIM_NO_VALIDA.toString());
 
 			}
 
 		}
 		
-		LOG.warn(JWTError.USUARIO_INVALIDO.toString());
-		return ResponseEntity.ok(JWTError.USUARIO_INVALIDO.toString());
+		LOG.warn(SSOError.USUARIO_INVALIDO.toString());
+		return ResponseEntity.ok(SSOError.USUARIO_INVALIDO.toString());
 	}
 }

@@ -26,7 +26,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.sso.springboot.JWT.JwtTokenUtil;
-import com.sso.springboot.Messages.JWTError;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantService;
 import com.sso.springboot.UserClaims.UserClaims;
@@ -59,12 +59,12 @@ public class LoginCallback {
 
 	@PostMapping("/LoginCallback")
 	public RedirectView saveDetails(HttpServletRequest request, @RequestParam("usuario") String usuario,
-			@RequestParam("password") String password, @RequestParam("tenant") String tenant, ModelMap modelMap)
-			throws Exception {
+			@RequestParam("password") String password, @RequestParam("tenant") String tenant, ModelMap modelMap) throws Exception {
+			
 		// write your code to save details
 		Tenant tn = tenantService.findByApiName(tenant);
-		String Error = "";
 		String url = "";
+		
 		try {
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario, password);
 
@@ -79,10 +79,9 @@ public class LoginCallback {
 			List<UserClaims> userClaims = userClaimService.findClaimsForUser(user.get());
 
 			for (UserClaims c : userClaims) {
-
 				claims.put(c.getClaim().getNombre(), c.getClaimValue());
-
 			}
+
 			claims.put("client_id", user.get().getIdUsuario());
 			claims.put("iss", tn.getNombre());
 			String idUsuario = String.valueOf(user.get().getIdUsuario());
@@ -93,27 +92,24 @@ public class LoginCallback {
 			url = ((tn.getCallbackSuccess() == null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
 			url += "?TOKEN=" + token;
 
-			LOG.info("Token genrado para usuario = " + usuario);
+			LOG.info("Token generado para usuario = " + usuario);
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
+			url += "?ERROR=" + toURI(SSOError.USUARIO_INVALIDO.toString());
 			LOG.info(e.getMessage());
 
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(JWTError.USUARIO_INVALIDO.toString());
-
+			url += "?ERROR=" + toURI(SSOError.USUARIO_INVALIDO.toString());
 			LOG.info(e.getMessage());
-
 		}
 
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(url);
 
 		return redirectView;
-
 	}
 
 	public String toURI(String val) {
