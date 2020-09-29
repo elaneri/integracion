@@ -82,7 +82,7 @@ public class JwtTokenUtil  {
 	}
 
 	public Boolean canTokenBeRefreshed(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
-		return (!isTokenExpired(token) || ignoreTokenExpiration(token));
+		return (isTokenExpired(token) || ignoreTokenExpiration(token));
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
