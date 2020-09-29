@@ -33,6 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/LoginCallback").permitAll()
 				.antMatchers("/Claims/**").permitAll()
 				.antMatchers("/LoginCallbackValidator/**").permitAll()
+				.antMatchers("/Usuarios/Eliminar/**").permitAll()
+				.antMatchers("/Usuarios/Habilitar/**").permitAll()
+				.antMatchers("/LoginCallbackValidator/**").permitAll()
 
 				
 				// all other requests need to be authenticated
