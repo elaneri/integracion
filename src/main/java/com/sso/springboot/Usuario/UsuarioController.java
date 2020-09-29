@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.sso.springboot.JWT.JwtUserDetailsService;
-
 @RestController
 @RequestMapping("/Usuarios")
 public class UsuarioController {
@@ -33,7 +31,6 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apk,
 			@PathVariable("idUsuario") Long id) throws Exception {
 
-
 		Optional<Usuario> usuario = usuarioService.findById(id);
 		if (usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
@@ -46,7 +43,6 @@ public class UsuarioController {
 			return ResponseEntity.ok(usuario.get());
 		} else {
 			LOG.warn( "Usuario no encontrado");
-
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -101,8 +97,6 @@ public class UsuarioController {
 		} else {
 			
 			LOG.warn("Usuario no encontrado");
-
-			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -118,7 +112,6 @@ public class UsuarioController {
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				LOG.warn( "No se puede eliminar el usuario. Permiso denegado!");
-
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere eliminar....
 				throw new ResponseStatusException(
 						HttpStatus.FORBIDDEN, "No se puede eliminar el usuario. Permiso denegado!");
@@ -131,8 +124,6 @@ public class UsuarioController {
 		} else {
 			
 			LOG.warn( "Usuario no encontrado");
-
-			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
@@ -148,7 +139,6 @@ public class UsuarioController {
 		if (usuario != null && usuario.isPresent()) {
 			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
 				LOG.warn("No se puede habilitar el usuario. Permiso denegado!");
-
 				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere habilitar....
 				throw new ResponseStatusException(
 						HttpStatus.FORBIDDEN, "No se puede habilitar el usuario. Permiso denegado!");
@@ -160,8 +150,6 @@ public class UsuarioController {
 			return ResponseEntity.ok(usuarioHabilitado);
 		} else {
 			LOG.warn("Usuario no encontrado");
-
-			
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		}
