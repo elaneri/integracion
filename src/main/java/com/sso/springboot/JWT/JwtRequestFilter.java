@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.sso.springboot.Messages.SSOError;
+
 import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
@@ -41,24 +43,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		// JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
 			jwtToken = requestTokenHeader.substring(7);
+			
 			try {
 				userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
 			} catch (IllegalArgumentException e) {
-				LOG.warn("No se ha podido obtener el Token JWT");
+				LOG.warn(SSOError.JWT_ERROR_OBTENER_JWT.toString());
 			} catch (ExpiredJwtException e) {
-				
 				if (jwtTokenUtil.canTokenBeRefreshed(jwtToken)){
-					LOG.warn("El Token puede ser actualizado");
+					LOG.warn(SSOError.JWT_ACTUALIZADO.toString());
 				}
 				
-
-				LOG.warn("El Token JWT ha expirado");
+				LOG.warn(SSOError.JWT_EXPIRADO.toString());
 			}
 		} else {
-			
-			LOG.warn("El Token JWT no comienza con la palabra Bearer");
-
-			
+			LOG.warn(SSOError.JWT_BARRER_MISSING.toString());
 		}
 
 		//Once we get the token validate it.
@@ -78,10 +76,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
-		
-
-		
 		chain.doFilter(request, response);
 	}
-
 }

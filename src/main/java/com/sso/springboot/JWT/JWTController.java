@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sso.springboot.Messages.JWTMessages;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.UserClaims.UserClaims;
 import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
@@ -53,14 +54,10 @@ public class JWTController {
 		Optional<Usuario> usuario = userService.findByUserIdAndTenant(jwtTokenUtil.getUserIdFromToken(token));
 
 		if (!usuario.isPresent()) {
-			LOG.info("usuario invalido");
-			
-			throw new Exception("USER_DISABLED");
-
+			//TODO: usuario inválido o deshabilitado???
+			LOG.info(SSOError.USUARIO_INVALIDO.toString());
+			throw new Exception(SSOError.USUARIO_INVALIDO.toString());
 		} else {
-
-			
-
 			Map<String, Object> claims = new HashMap<>();
 			List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
 
@@ -76,9 +73,7 @@ public class JWTController {
 			newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.refreshToken(idUsuario, claims);
 			
 			LOG.info("Token generado para usuario " +usuario.get().getNombre() +newtoken);
-
 		}
-
 		return ResponseEntity.ok(new JwtResponse(newtoken));
 	}
 }
