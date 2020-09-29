@@ -22,7 +22,7 @@ public class JwtTokenUtil  {
 	public static final String BEARER = "Bearer ";
 	
 	public static final long JWT_TOKEN_VALIDITY = 20*60;
-
+	public static final long JWT_TOKEN_REFRESH_VALIDITY = 24*60*60;
 
 	public String getUserIdFromToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
 		return getClaimFromToken(token, Claims::getSubject);
@@ -53,15 +53,24 @@ public class JwtTokenUtil  {
 		return expiration.before(new Date());
 	}
 
-	private Boolean ignoreTokenExpiration(String token) {
-		// here you specify tokens, for that the expiration is ignored
-		return false;
+	private Boolean ignoreTokenExpiration(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
+		final Date expiration = getExpirationDateFromToken(token);
+		return expiration.before(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000));
 	}
 	
 	
-	
+	public String refreshToken(String userId, Map<String, Object> claims) throws UnsupportedEncodingException {
+		return doRefrehToken(claims, userId);
+	}
 	public String generateToken(String userId, Map<String, Object> claims) throws UnsupportedEncodingException {
 		return doGenerateToken(claims, userId);
+	}
+	private String doRefrehToken(Map<String, Object> claims, String userId) throws UnsupportedEncodingException {
+		String secret =System.getenv("PUBLIC_TOKEN_K");
+		if (secret==null)secret="TEST";
+		
+		return Jwts.builder().setClaims(claims).setSubject(userId).setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret.getBytes("UTF-8")).compact();
 	}
 
 	private String doGenerateToken(Map<String, Object> claims, String userId) throws UnsupportedEncodingException {

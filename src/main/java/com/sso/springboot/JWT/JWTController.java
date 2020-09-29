@@ -73,7 +73,7 @@ public class JWTController {
 			claims.put("iss", JwtTokenUtil.ISS);
 			String idUsuario = String.valueOf(usuario.get().getIdUsuario());
 
-			newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.generateToken(idUsuario, claims);
+			newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.refreshToken(idUsuario, claims);
 			
 			LOG.info("Token generado para usuario " +usuario.get().getNombre() +newtoken);
 

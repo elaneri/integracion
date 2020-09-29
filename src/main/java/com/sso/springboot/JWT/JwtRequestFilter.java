@@ -46,9 +46,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			} catch (IllegalArgumentException e) {
 				LOG.warn("No se ha podido obtener el Token JWT");
 			} catch (ExpiredJwtException e) {
-				LOG.warn("El Token JWT ha expirado");
-
 				
+				if (jwtTokenUtil.canTokenBeRefreshed(jwtToken)){
+					LOG.warn("El Token puede ser actualizado");
+				}
+				
+
+				LOG.warn("El Token JWT ha expirado");
 			}
 		} else {
 			
