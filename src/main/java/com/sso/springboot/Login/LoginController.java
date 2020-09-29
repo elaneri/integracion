@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sso.springboot.JWT.JwtRequest;
 import com.sso.springboot.JWT.JwtResponse;
 import com.sso.springboot.JWT.JwtTokenUtil;
-import com.sso.springboot.JWT.JwtUserDetailsService;
+import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.UserClaims.UserClaims;
 import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
@@ -65,9 +65,7 @@ public class LoginController {
 			List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
 
 			for (UserClaims c : userClaims) {
-
 				claims.put(c.getClaim().getNombre(), c.getClaimValue());
-
 			}
 			claims.put("client_id", usuario.get().getIdUsuario());
 			claims.put("iss", JwtTokenUtil.ISS);
@@ -78,13 +76,10 @@ public class LoginController {
 
 		} catch (DisabledException e) {
 			LOG.error(e.getMessage());
-
-			throw new Exception("USER_DISABLED", e);
+			throw new Exception(SSOError.USUARIO_DESHABILITADO.toString(), e);
 		} catch (BadCredentialsException e) {
-
 			LOG.error(e.getMessage());
-
-			throw new Exception("INVALID_CREDENTIALS", e);
+			throw new Exception(SSOError.CREDENCIALES_INVALIDAS.toString(), e);
 		}
 	}
 }
