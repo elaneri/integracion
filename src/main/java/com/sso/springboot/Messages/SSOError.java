@@ -22,7 +22,8 @@ public enum SSOError {
 	USUARIO_DESHABILITADO(17,"Usuario deshabilitado"),
 	USUARIO_PASSWORD_INCORRECTO(18,"Usuario o Password incorrectos"),
 	CREDENCIALES_INVALIDAS(19,"Credenciales inválidas"),
-	CLAIM_VALOR_10_CARACTERES(20,"El tamaño del valor del claim no puede superar los 10 caracteres");
+	CLAIM_VALOR_10_CARACTERES(20,"El tamaño del valor del claim no puede superar los 10 caracteres"),
+	CLAIM_CANTIDAD_10(21,"El usuario no puede tener más de 10 claims en el token");
 	
 	
 	private final int code;

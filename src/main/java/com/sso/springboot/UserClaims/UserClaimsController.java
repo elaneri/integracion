@@ -65,7 +65,15 @@ public class UserClaimsController {
 			LOG.warn(SSOError.CLAIM_VALOR_10_CARACTERES.toString());
 			throw new Exception(SSOError.CLAIM_VALOR_10_CARACTERES.toString());
 		}
-
+		
+		List<UserClaims> claims = new ArrayList<UserClaims>();
+		claims = userClaimService.findClaimsForUser(us.get());
+		
+		if (!claims.isEmpty() &&  claims.size() > 10) {
+			LOG.warn(SSOError.CLAIM_CANTIDAD_10.toString());
+			throw new Exception(SSOError.CLAIM_CANTIDAD_10.toString());
+		}
+			
 		if (us.isPresent()) {
 			Claim cl = claimService.findByNombre(claim.getNombre());
 
