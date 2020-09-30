@@ -1,9 +1,12 @@
-package com.sso.springboot.Usuario;
+package com.sso.springboot.Validaciones;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
+
+import com.sso.springboot.Usuario.AccionUsuario;
+import com.sso.springboot.Usuario.Usuario;
 
 public class UsuarioHelper {
 
@@ -96,6 +99,10 @@ public class UsuarioHelper {
 		Date fechaActual = new Date();
 		if(convertirFechaAFormatoJapones(fechaActual).compareTo(usuario.getFecha_nacimiento()) < 0) {
 			throw new Exception("La fecha de nacimiento no puede ser mayor a la fecha actual");
+		}
+		
+		if (!usuario.getPropiedades().isNull() &&  !JSONUtils.isJSONValido(usuario.getPropiedades().toString())) {
+			throw new Exception("Las propiedades del usuario deben estar en formato JSON");
 		}
 	}
 	
