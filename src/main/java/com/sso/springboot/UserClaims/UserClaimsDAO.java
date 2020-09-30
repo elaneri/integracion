@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.sso.springboot.Claims.Claim;
-import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Usuario.Usuario;
 
 
