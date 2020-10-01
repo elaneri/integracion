@@ -20,6 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.sso.springboot.Messages.SSOError;
 import com.sso.springboot.Validaciones.UsuarioHelper;
 
+import net.minidev.json.JSONObject;
+
 @RestController
 @RequestMapping("/Usuarios")
 public class UsuarioController {
@@ -55,7 +57,12 @@ public class UsuarioController {
 	@PostMapping
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
+		
+		
+		if(usuario.getPropiedades()!=null)
+		LOG.warn("Log prop " + usuario.getPropiedades().toPrettyString());
 
+		
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
 		
 		if (usuarioExistente != null && usuarioExistente.isPresent() && usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
