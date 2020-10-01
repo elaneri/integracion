@@ -53,7 +53,7 @@ public class JWTController {
 
 		LOG.info("Llamada a refresh de TOKEN");
 		String newtoken = "";
-		String userId = "";
+		String userId = null;
 
 		token = token.replace(JwtTokenUtil.BEARER, "");
 
