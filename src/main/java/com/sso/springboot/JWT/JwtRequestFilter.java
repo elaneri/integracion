@@ -49,9 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			} catch (IllegalArgumentException e) {
 				LOG.warn(SSOError.JWT_ERROR_OBTENER_JWT.toString());
 			} catch (ExpiredJwtException e) {
-				if (jwtTokenUtil.canTokenBeRefreshed(jwtToken)){
-					LOG.warn(SSOError.JWT_ACTUALIZADO.toString());
-				}
+			
 				
 				LOG.warn(SSOError.JWT_EXPIRADO.toString());
 			}

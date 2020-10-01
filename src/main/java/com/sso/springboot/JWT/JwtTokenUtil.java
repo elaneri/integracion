@@ -1,7 +1,11 @@
 package com.sso.springboot.JWT;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -48,14 +52,18 @@ public class JwtTokenUtil  {
 		return Jwts.parser().setSigningKey(secret.getBytes("UTF-8")).parseClaimsJws(token).getBody();
 	}
 
-	private Boolean isTokenExpired(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
+	public Boolean isTokenExpired(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
 
-	private Boolean ignoreTokenExpiration(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
-		final Date expiration = getExpirationDateFromToken(token);
-		return expiration.before(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000));
+	public Boolean ignoreTokenExpiration(Map<String, Object> claims) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException, ParseException {
+
+		int tim = (int)claims.get("exp");
+
+	    Date expDate= new Date(tim*1000);
+
+		return  expDate.before(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000));
 	}
 	
 	
@@ -81,8 +89,8 @@ public class JwtTokenUtil  {
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret.getBytes("UTF-8")).compact();
 	}
 
-	public Boolean canTokenBeRefreshed(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {
-		return (isTokenExpired(token) || ignoreTokenExpiration(token));
+	public Boolean canTokenBeRefreshed(Map<String, Object> claims) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException, ParseException {
+		return (ignoreTokenExpiration(claims));
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException {

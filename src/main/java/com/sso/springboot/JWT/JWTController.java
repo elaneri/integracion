@@ -24,6 +24,8 @@ import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioService;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 @RestController
 @RequestMapping("/JWT")
 public class JWTController {
@@ -51,30 +53,45 @@ public class JWTController {
 
 		LOG.info("Llamada a refresh de TOKEN");
 		String newtoken = "";
+		String userId = "";
 
 		token = token.replace(JwtTokenUtil.BEARER, "");
-		Optional<Usuario> usuario = userService.findByUserIdAndTenant(jwtTokenUtil.getUserIdFromToken(token));
 
-		if (!usuario.isPresent()) {
-			//TODO: usuario inválido o deshabilitado??? o no encontrado????
+		try {
+			jwtTokenUtil.isTokenExpired(token);
+		} catch (ExpiredJwtException e) {
+			if (jwtTokenUtil.ignoreTokenExpiration(e.getClaims())) {
+				userId = String.valueOf(e.getClaims().get("sub"));
+			}
+			LOG.warn(SSOError.JWT_EXPIRADO.toString());
+		}
+		if (userId == null) {
 			LOG.info(SSOError.USUARIO_INVALIDO.toString());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
 		} else {
-			Map<String, Object> claims = new HashMap<>();
-			List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
+			Optional<Usuario> usuario = userService.findByUserIdAndTenant(userId);
 
-			for (UserClaims c : userClaims) {
+			if (!usuario.isPresent()) {
+				// TODO: usuario inválido o deshabilitado??? o no encontrado????
+				LOG.info(SSOError.USUARIO_INVALIDO.toString());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
+			} else {
+				Map<String, Object> claims = new HashMap<>();
+				List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());
 
-				claims.put(c.getClaim().getNombre(), c.getClaimValue());
+				for (UserClaims c : userClaims) {
 
+					claims.put(c.getClaim().getNombre(), c.getClaimValue());
+
+				}
+				claims.put("client_id", usuario.get().getIdUsuario());
+				claims.put("iss", JwtTokenUtil.ISS);
+				String idUsuario = String.valueOf(usuario.get().getIdUsuario());
+
+				newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.refreshToken(idUsuario, claims);
+
+				LOG.info("Token generado para usuario " + usuario.get().getNombre() + newtoken);
 			}
-			claims.put("client_id", usuario.get().getIdUsuario());
-			claims.put("iss", JwtTokenUtil.ISS);
-			String idUsuario = String.valueOf(usuario.get().getIdUsuario());
-
-			newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.refreshToken(idUsuario, claims);
-			
-			LOG.info("Token generado para usuario " +usuario.get().getNombre() +newtoken);
 		}
 		return ResponseEntity.ok(new JwtResponse(newtoken));
 	}
