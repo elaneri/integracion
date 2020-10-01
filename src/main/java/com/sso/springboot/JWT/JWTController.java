@@ -63,17 +63,17 @@ public class JWTController {
 			if (jwtTokenUtil.ignoreTokenExpiration(e.getClaims())) {
 				userId = String.valueOf(e.getClaims().get("sub"));
 			}
-			LOG.warn(SSOError.JWT_EXPIRADO.toString() + " user id "  + userId);
+			LOG.warn(SSOError.JWT_EXPIRADO.toString());
 		}
 		if (userId == null) {
-			LOG.info(SSOError.USUARIO_INVALIDO.toString());
+			LOG.info(SSOError.USUARIO_INVALIDO.toString() + " id usuario null");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
 		} else {
 			Optional<Usuario> usuario = userService.findByUserIdAndTenant(userId);
 
 			if (!usuario.isPresent()) {
 				// TODO: usuario inválido o deshabilitado??? o no encontrado????
-				LOG.info(SSOError.USUARIO_INVALIDO.toString());
+				LOG.info(SSOError.USUARIO_INVALIDO.toString() + " id usuario no encontrados" );
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
 			} else {
 				Map<String, Object> claims = new HashMap<>();
