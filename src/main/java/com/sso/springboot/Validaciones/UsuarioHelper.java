@@ -101,9 +101,9 @@ public class UsuarioHelper {
 			throw new Exception("La fecha de nacimiento no puede ser mayor a la fecha actual");
 		}
 	
-//		if (!usuario.getPropiedades().isNull() &&  !JSONUtils.isJSONValido(usuario.getPropiedades().toString())) {
-//			throw new Exception("Las propiedades del usuario deben estar en formato JSON");
-//		}
+		if (!usuario.getPropiedades().isNull() &&  !JSONUtils.isJSONValido(usuario.getPropiedades().toString())) {
+			throw new Exception("Las propiedades del usuario deben estar en formato JSON");
+		}
 	}
 	
 	public static String convertirFechaAFormatoJapones(Date fecha) {
