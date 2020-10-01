@@ -56,10 +56,6 @@ public class UsuarioController {
 	@PostMapping
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
 			throws Exception {
-		
-		
-		if(usuario.getPropiedades()!=null)
-		LOG.warn("Log prop " + usuario.getPropiedades().toPrettyString());
 
 		
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
