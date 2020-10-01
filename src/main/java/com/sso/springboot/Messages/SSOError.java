@@ -23,7 +23,8 @@ public enum SSOError {
 	USUARIO_PASSWORD_INCORRECTO(18,"Usuario o Password incorrectos"),
 	CREDENCIALES_INVALIDAS(19,"Credenciales inválidas"),
 	CLAIM_VALOR_10_CARACTERES(20,"El tamaño del valor del claim no puede superar los 10 caracteres"),
-	CLAIM_CANTIDAD_10(21,"El usuario no puede tener más de 10 claims en el token");
+	CLAIM_CANTIDAD_10(21,"El usuario no puede tener más de 10 claims en el token"),
+	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro");
 	
 	
 	private final int code;

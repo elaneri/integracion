@@ -54,26 +54,30 @@ public class JWTController {
 		LOG.info("Llamada a refresh de TOKEN");
 		String newtoken = "";
 		String userId = null;
+		boolean expiredTk = false;
 
 		token = token.replace(JwtTokenUtil.BEARER, "");
 
 		try {
 			jwtTokenUtil.isTokenExpired(token);
+
 		} catch (ExpiredJwtException e) {
 			if (jwtTokenUtil.ignoreTokenExpiration(e.getClaims())) {
 				userId = String.valueOf(e.getClaims().get("sub"));
+				expiredTk = true;
 			}
 			LOG.warn(SSOError.JWT_EXPIRADO.toString());
 		}
-		if (userId == null) {
-			LOG.info(SSOError.USUARIO_INVALIDO.toString() + " id usuario null");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
+
+		if (!expiredTk) {
+			LOG.info(SSOError.JWT_NO_EXPIRADO.toString());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SSOError.JWT_NO_EXPIRADO.toString());
 		} else {
 			Optional<Usuario> usuario = userService.findByUserIdAndTenant(userId);
 
 			if (!usuario.isPresent()) {
 				// TODO: usuario inválido o deshabilitado??? o no encontrado????
-				LOG.info(SSOError.USUARIO_INVALIDO.toString() + " id usuario no encontrados" );
+				LOG.info(SSOError.USUARIO_INVALIDO.toString());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
 			} else {
 				Map<String, Object> claims = new HashMap<>();
@@ -92,6 +96,7 @@ public class JWTController {
 
 				LOG.info("Token generado para usuario " + usuario.get().getNombre() + newtoken);
 			}
+
 		}
 		return ResponseEntity.ok(new JwtResponse(newtoken));
 	}
