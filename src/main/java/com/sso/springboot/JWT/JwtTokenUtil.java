@@ -68,18 +68,12 @@ public class JwtTokenUtil  {
 	
 	
 	public String refreshToken(String userId, Map<String, Object> claims) throws UnsupportedEncodingException {
-		return doRefrehToken(claims, userId);
+		return doGenerateToken(claims, userId);
 	}
 	public String generateToken(String userId, Map<String, Object> claims) throws UnsupportedEncodingException {
 		return doGenerateToken(claims, userId);
 	}
-	private String doRefrehToken(Map<String, Object> claims, String userId) throws UnsupportedEncodingException {
-		String secret =System.getenv("PUBLIC_TOKEN_K");
-		if (secret==null)secret="TEST";
-		
-		return Jwts.builder().setClaims(claims).setSubject(userId).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret.getBytes("UTF-8")).compact();
-	}
+
 
 	private String doGenerateToken(Map<String, Object> claims, String userId) throws UnsupportedEncodingException {
 		String secret =System.getenv("PUBLIC_TOKEN_K");
