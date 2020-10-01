@@ -63,7 +63,7 @@ public class JWTController {
 			if (jwtTokenUtil.ignoreTokenExpiration(e.getClaims())) {
 				userId = String.valueOf(e.getClaims().get("sub"));
 			}
-			LOG.warn(SSOError.JWT_EXPIRADO.toString());
+			LOG.warn(SSOError.JWT_EXPIRADO.toString() + " user id "  + userId);
 		}
 		if (userId == null) {
 			LOG.info(SSOError.USUARIO_INVALIDO.toString());
