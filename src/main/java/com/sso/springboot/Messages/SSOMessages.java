@@ -50,6 +50,6 @@ public enum SSOMessages {
 
 	@Override
 	public String toString() {
-			return "{\"ERROR\":\""+description+"\"}";
+			return "{\"DESC\":\""+description+"\"}";
 	}
 }
