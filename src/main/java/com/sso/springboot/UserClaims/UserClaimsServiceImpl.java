@@ -12,9 +12,8 @@ import com.sso.springboot.Usuario.Usuario;
 
 @Service
 @Transactional(readOnly = false)
-public class UserClaimsServiceImpl implements  UserClaimsService{
+public class UserClaimsServiceImpl implements UserClaimsService {
 
-	
 	@Autowired
 	UserClaimsDAO userClaimsDao;
 
@@ -27,7 +26,7 @@ public class UserClaimsServiceImpl implements  UserClaimsService{
 	@Override
 	public Optional<UserClaims> findClaimForUser(Usuario usuario, Claim claim) {
 		// TODO Auto-generated method stub
-		return userClaimsDao.findClaimForUser(usuario,claim );
+		return userClaimsDao.findClaimForUser(usuario, claim);
 	}
 
 	@Override
@@ -36,6 +35,9 @@ public class UserClaimsServiceImpl implements  UserClaimsService{
 		return userClaimsDao.save(userClaim);
 	}
 
-
+	public void delete(UserClaims userClaim) {
+		// TODO Auto-generated method stub
+		userClaimsDao.delete(userClaim);
+	}
 
 }

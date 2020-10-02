@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.sso.springboot.JWT.JwtRequest;
 import com.sso.springboot.JWT.JwtResponse;
 import com.sso.springboot.JWT.JwtTokenUtil;
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.UserClaims.UserClaims;
 import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
@@ -78,10 +78,10 @@ public class LoginController {
 
 		} catch (DisabledException e) {
 			LOG.error(e.getMessage());
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_DESHABILITADO.toString(), e);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_DESHABILITADO.toString(), e);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.getMessage());
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOError.CREDENCIALES_INVALIDAS.toString(), e);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.CREDENCIALES_INVALIDAS.toString(), e);
 		}
 	}
 }

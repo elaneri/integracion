@@ -26,7 +26,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.sso.springboot.JWT.JwtTokenUtil;
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantService;
 import com.sso.springboot.UserClaims.UserClaims;
@@ -99,13 +99,13 @@ public class LoginCallback {
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOError.USUARIO_INVALIDO.toString());
+			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO.toString());
 			LOG.info(e.getMessage());
 
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOError.USUARIO_INVALIDO.toString());
+			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO.toString());
 			LOG.info(e.getMessage());
 		}
 

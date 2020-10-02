@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.Tenant.Tenant;
 import com.sso.springboot.Tenant.TenantServiceImpl;
 
@@ -51,7 +51,7 @@ public class TenantFilter extends OncePerRequestFilter {
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.getWriter().write(SSOError.TENANT_API_KEY.toString());
+				response.getWriter().write(SSOMessages.TENANT_API_KEY.toString());
 			}
 		}
 	}

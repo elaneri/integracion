@@ -19,5 +19,7 @@ public interface UserClaimsDAO extends JpaRepository<UserClaims, Long> {
 	Optional<UserClaims>  findClaimForUser(Usuario usuario, Claim claim);
 	
 	UserClaims save(UserClaims userClaim);
+	
+	void delete(UserClaims userClaim);
 
 }

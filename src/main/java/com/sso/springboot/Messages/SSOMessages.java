@@ -1,6 +1,6 @@
 package com.sso.springboot.Messages;
 
-public enum SSOError {
+public enum SSOMessages {
 	
 	TENANT_API_KEY(0, "Error Tenant ApiKey no valida"),
 	API_KEY_INCORRECTA(1, "ApiKey incorrecta"),
@@ -24,13 +24,18 @@ public enum SSOError {
 	CREDENCIALES_INVALIDAS(19,"Credenciales inválidas"),
 	CLAIM_VALOR_10_CARACTERES(20,"El tamaño del valor del claim no puede superar los 10 caracteres"),
 	CLAIM_CANTIDAD_10(21,"El usuario no puede tener más de 10 claims en el token"),
+	CLAIM_MODIFICADA(22,"Claim modificada" ),
+	CLAIM_INSERTADA(23,"Claim insertada" ),
+	CLAIM_ELIMINADA(22,"Claim eliminada" ),
+	JWT_VALIDO(24,"JWT Valido" ),
+
 	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro");
 	
 	
 	private final int code;
 	private final String description;
 
-	private SSOError(int code, String description) {
+	private SSOMessages(int code, String description) {
 		this.code = code;
 		this.description = description;
 	}

@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioService;
 
@@ -30,8 +30,8 @@ public class JWTAuthenticationManager implements AuthenticationManager{
 		String apk = (String)authentication.getDetails();
 		
 		if(apk == null ) {
-			LOG.warn(SSOError.API_KEY_INCORRECTA.toString() + apk);
-			throw new BadCredentialsException(SSOError.API_KEY_INCORRECTA.toString());
+			LOG.warn(SSOMessages.API_KEY_INCORRECTA.toString() + apk);
+			throw new BadCredentialsException(SSOMessages.API_KEY_INCORRECTA.toString());
 		}
 		
 		Optional<Usuario> usuario = userService.findByUserAndPassAndApiKey
@@ -40,8 +40,8 @@ public class JWTAuthenticationManager implements AuthenticationManager{
 		
 		
 		if(usuario == null || !usuario.isPresent() || !usuario.get().isEnable())  {
-			LOG.warn(SSOError.USUARIO_PASSWORD_INCORRECTO.toString());
-					throw new BadCredentialsException(SSOError.USUARIO_PASSWORD_INCORRECTO.toString());
+			LOG.warn(SSOMessages.USUARIO_PASSWORD_INCORRECTO.toString());
+					throw new BadCredentialsException(SSOMessages.USUARIO_PASSWORD_INCORRECTO.toString());
 		}
 
 		return authentication;

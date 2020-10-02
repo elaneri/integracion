@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.sso.springboot.Messages.JWTMessages;
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.UserClaims.UserClaims;
 import com.sso.springboot.UserClaims.UserClaimsService;
 import com.sso.springboot.Usuario.Usuario;
@@ -45,7 +44,7 @@ public class JWTController {
 	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,
 			@RequestBody JwtRequest authenticationRequest) throws Exception {
 
-		return ResponseEntity.ok(JWTMessages.JWT_VALIDO);
+		return ResponseEntity.ok(SSOMessages.JWT_VALIDO);
 	}
 
 	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
@@ -66,19 +65,19 @@ public class JWTController {
 				userId = String.valueOf(e.getClaims().get("sub"));
 				expiredTk = true;
 			}
-			LOG.warn(SSOError.JWT_EXPIRADO.toString());
+			LOG.warn(SSOMessages.JWT_EXPIRADO.toString());
 		}
 
 		if (!expiredTk) {
-			LOG.info(SSOError.JWT_NO_EXPIRADO.toString());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SSOError.JWT_NO_EXPIRADO.toString());
+			LOG.info(SSOMessages.JWT_NO_EXPIRADO.toString());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SSOMessages.JWT_NO_EXPIRADO.toString());
 		} else {
 			Optional<Usuario> usuario = userService.findByUserIdAndTenant(userId);
 
 			if (!usuario.isPresent()) {
 				// TODO: usuario inválido o deshabilitado??? o no encontrado????
-				LOG.info(SSOError.USUARIO_INVALIDO.toString());
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOError.USUARIO_INVALIDO.toString());
+				LOG.info(SSOMessages.USUARIO_INVALIDO.toString());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_INVALIDO.toString());
 			} else {
 				Map<String, Object> claims = new HashMap<>();
 				List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());

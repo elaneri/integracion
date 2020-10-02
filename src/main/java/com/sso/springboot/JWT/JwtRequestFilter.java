@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -47,14 +47,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
 			} catch (IllegalArgumentException e) {
-				LOG.warn(SSOError.JWT_ERROR_OBTENER_JWT.toString());
+				LOG.warn(SSOMessages.JWT_ERROR_OBTENER_JWT.toString());
 			} catch (ExpiredJwtException e) {
 			
 				
-				LOG.warn(SSOError.JWT_EXPIRADO.toString());
+				LOG.warn(SSOMessages.JWT_EXPIRADO.toString());
 			}
 		} else {
-			LOG.warn(SSOError.JWT_BARRER_MISSING.toString());
+			LOG.warn(SSOMessages.JWT_BARRER_MISSING.toString());
 		}
 
 		//Once we get the token validate it.

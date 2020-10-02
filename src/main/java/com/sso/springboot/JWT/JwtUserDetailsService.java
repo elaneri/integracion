@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.sso.springboot.Messages.SSOError;
+import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.Usuario.Usuario;
 import com.sso.springboot.Usuario.UsuarioDAO;
 
@@ -39,8 +39,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 			return new User(usId, usuario.get().getPassword(),
 					new ArrayList<>());
 		} else {
-			LOG.warn(SSOError.USUARIO_NO_ENCONTRADO + ": " + userId);
-			throw new UsernameNotFoundException(SSOError.USUARIO_NO_ENCONTRADO + ": " + userId);
+			LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO + ": " + userId);
+			throw new UsernameNotFoundException(SSOMessages.USUARIO_NO_ENCONTRADO + ": " + userId);
 		}
 	}
 }
