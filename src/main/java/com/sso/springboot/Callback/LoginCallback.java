@@ -58,9 +58,12 @@ public class LoginCallback {
 
 
 	@PostMapping("/LoginCallback")
-	public RedirectView saveDetails(HttpServletRequest request, @RequestParam("usuario") String usuario,
-			@RequestParam("password") String password, @RequestParam("tenant") String tenant, ModelMap modelMap) throws Exception {
+	public RedirectView callBack(HttpServletRequest request, @RequestParam("usuario") String usuario,
+			@RequestParam("password") String password, @RequestParam("tenant") String tenant) throws Exception {
 			
+		
+		LOG.info("tenant callback = " + tenant);
+		
 		// write your code to save details
 		Tenant tn = tenantService.findByApiName(tenant);
 		String url = "";
