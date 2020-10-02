@@ -39,7 +39,7 @@ public class TenantFilter extends OncePerRequestFilter {
 
 		LOG.info("Callback referrer  " + referrer);
 
-		if (referrer != null && referrer != null && calbackurl.compareTo(referrer) == 0) {
+		if (referrer != null && referrer != null && referrer.indexOf(calbackurl) > 0) {
 			LOG.info("Callback submit");
 			chain.doFilter(request, response);
 		} else {
