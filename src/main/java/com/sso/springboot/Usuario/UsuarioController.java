@@ -35,28 +35,20 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apk,
 			@PathVariable("idUsuario") Long id) throws Exception {
 
-		try {
-			Optional<Usuario> usuario = usuarioService.findById(id);
-			if (usuario.isPresent()) {
-				if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
-					//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
-					LOG.warn(SSOMessages.VER_USUARIO_DENEGADO.toString());
-					throw new ResponseStatusException(
-							HttpStatus.FORBIDDEN, SSOMessages.VER_USUARIO_DENEGADO.toString());
-				}
-				usuario.get().setPassword("???");
-				return ResponseEntity.ok(usuario.get());
-			} else {
-				LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+		Optional<Usuario> usuario = usuarioService.findById(id);
+		if (usuario.isPresent()) {
+			if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
+				//validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
+				LOG.warn(SSOMessages.VER_USUARIO_DENEGADO.toString());
 				throw new ResponseStatusException(
-						HttpStatus.NOT_FOUND, SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+						HttpStatus.FORBIDDEN, SSOMessages.VER_USUARIO_DENEGADO.toString());
 			}
-			
-		} catch (ResponseStatusException e) {
-			throw new Exception(e.fillInStackTrace());
-		} catch (Exception e) {
-			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
-			throw new Exception(SSOMessages.ERROR_GENERICO.toString());
+			usuario.get().setPassword("???");
+			return ResponseEntity.ok(usuario.get());
+		} else {
+			LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, SSOMessages.USUARIO_NO_ENCONTRADO.toString());
 		}
 	}
 
