@@ -28,8 +28,8 @@ public enum SSOMessages {
 	CLAIM_INSERTADA(23,"Claim insertada" ),
 	CLAIM_ELIMINADA(22,"Claim eliminada" ),
 	JWT_VALIDO(24,"JWT Valido" ),
-
-	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro");
+	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro"),
+	ERROR_GENERICO(25,"Error Inesperado");
 	
 	
 	private final int code;
