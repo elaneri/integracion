@@ -30,9 +30,9 @@ public class UsuarioController {
 	private static final Logger LOG = LoggerFactory.getLogger(UsuarioController.class);
 
 	// GET: http://localhost:1317/Usuarios/1
-	@RequestMapping(value = "/{idUsuario}")
+	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.GET)
 	public ResponseEntity<Usuario> getUsuarioByID(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") Long id) throws Exception {
+			@PathVariable("idUsuario") Long id) throws ResponseStatusException {
 
 		Optional<Usuario> usuario = usuarioService.findById(id);
 		try {
@@ -60,9 +60,9 @@ public class UsuarioController {
 	}
 
 	// POST: http://localhost:8080/Usuarios
-	@PostMapping
+	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<Usuario> crearUsuario(@RequestHeader("x-api-key") String apk, @RequestBody Usuario usuario)
-			throws Exception {
+			throws ResponseStatusException {
 
 		Optional<Usuario> usuarioExistente = usuarioService.findByUserNameAndTenant(usuario.getUsuario().trim(), apk);
 
@@ -75,17 +75,25 @@ public class UsuarioController {
 		Date fechaActual = new Date();
 		usuario.setFechaAlta(UsuarioHelper.convertirFechaAFormatoJapones(fechaActual));
 
-		UsuarioHelper.validarUsuario(usuario, AccionUsuario.ALTA);
-		Usuario nuevoUsuario = usuarioService.save(usuario, apk);
-		nuevoUsuario.setPassword("???");
-
-		return ResponseEntity.ok(nuevoUsuario);
+		try {
+			UsuarioHelper.validarUsuario(usuario, AccionUsuario.ALTA);
+			Usuario nuevoUsuario = usuarioService.save(usuario, apk);
+			nuevoUsuario.setPassword("???");
+			return ResponseEntity.ok(nuevoUsuario);
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+		}
+		
+		
 	}
 
 	// PUT: http://localhost:8080/Usuarios/1
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> actualizarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario usuarioModificado) throws Exception {
+			@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario usuarioModificado) throws ResponseStatusException {
 
 		Optional<Usuario> usuarioExistente = usuarioService.findById(idUsuario);
 
@@ -98,11 +106,19 @@ public class UsuarioController {
 						SSOMessages.MODIFICAR_USUARIO_DENEGADO.toString());
 			}
 
-			UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
-			Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado, apk);
-			usuario.setPassword("???");
+			try{
+				
+				UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
+				Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado, apk);
+				usuario.setPassword("???");
+				return ResponseEntity.ok(usuario);
 
-			return ResponseEntity.ok(usuario);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+			}
+			
+
 		} else {
 
 			LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
@@ -113,7 +129,7 @@ public class UsuarioController {
 	// PUT: http://localhost:8080/Usuarios/Eliminar/1
 	@RequestMapping(value = "/Eliminar/{idUsuario}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> eliminarUsuario(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario) throws Exception {
+			@PathVariable("idUsuario") long idUsuario) throws ResponseStatusException {
 
 		Optional<Usuario> usuario = usuarioService.findById(idUsuario);
 
