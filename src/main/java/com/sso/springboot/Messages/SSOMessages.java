@@ -29,6 +29,7 @@ public enum SSOMessages {
 	CLAIM_ELIMINADA(22,"Claim eliminada" ),
 	JWT_VALIDO(24,"JWT Valido" ),
 	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro"),
+	JWT_VENCIDO(3, "El Token se encuentra vencido"),
 	ERROR_GENERICO(25,"Error Inesperado");
 	
 	
@@ -50,6 +51,6 @@ public enum SSOMessages {
 
 	@Override
 	public String toString() {
-			return "{\"DESC\":\""+description+"\"}";
+			return description;
 	}
 }

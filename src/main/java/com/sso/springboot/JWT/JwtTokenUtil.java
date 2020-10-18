@@ -58,12 +58,13 @@ public class JwtTokenUtil  {
 	}
 
 	public Boolean ignoreTokenExpiration(Map<String, Object> claims) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, UnsupportedEncodingException, ParseException {
-
-		int tim = (int)claims.get("exp");
-
-	    Date expDate= new Date(tim*1000);
-
-		return  expDate.before(new Date(System.currentTimeMillis() + JWT_TOKEN_REFRESH_VALIDITY*1000));
+//Sat Oct 17 21:28:24 ART 2020
+	    Date expDate=  new Date(Long.valueOf(claims.get("exp").toString())*1000);
+//Sat Oct 17 22:09:18 ART 2020
+	    Date lastExpDate = new Date(System.currentTimeMillis()-JWT_TOKEN_REFRESH_VALIDITY*1000);
+	    
+	    
+		return  lastExpDate.before(expDate);
 	}
 	
 	

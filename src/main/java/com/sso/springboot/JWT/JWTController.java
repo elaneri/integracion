@@ -53,7 +53,9 @@ public class JWTController {
 		LOG.info("Llamada a refresh de TOKEN");
 		String newtoken = "";
 		String userId = null;
+
 		boolean expiredTk = false;
+		boolean canIgnoreExp = false;
 
 		token = token.replace(JwtTokenUtil.BEARER, "");
 
@@ -61,21 +63,30 @@ public class JWTController {
 			jwtTokenUtil.isTokenExpired(token);
 
 		} catch (ExpiredJwtException e) {
+
 			if (jwtTokenUtil.ignoreTokenExpiration(e.getClaims())) {
 				userId = String.valueOf(e.getClaims().get("sub"));
-				expiredTk = true;
+
+				canIgnoreExp = true;
 			}
+
+			expiredTk = true;
 			LOG.warn(SSOMessages.JWT_EXPIRADO.toString());
 		}
 
 		if (!expiredTk) {
 			LOG.info(SSOMessages.JWT_NO_EXPIRADO.toString());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SSOMessages.JWT_NO_EXPIRADO.toString());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.JWT_NO_EXPIRADO.toString());
+		} else if (!canIgnoreExp) {
+			
+			LOG.info(SSOMessages.JWT_VENCIDO.toString());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.JWT_VENCIDO.toString());
+			
+			
 		} else {
-			Optional<Usuario> usuario = userService.findByUserIdAndTenant(userId);
+			Optional<Usuario> usuario = userService.findByUserId(userId);
 
 			if (!usuario.isPresent()) {
-				// TODO: usuario inválido o deshabilitado??? o no encontrado????
 				LOG.info(SSOMessages.USUARIO_INVALIDO.toString());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_INVALIDO.toString());
 			} else {
@@ -93,7 +104,7 @@ public class JWTController {
 
 				newtoken = JwtTokenUtil.BEARER + jwtTokenUtil.refreshToken(idUsuario, claims);
 
-				LOG.info("Token generado para usuario " + usuario.get().getNombre() + newtoken);
+				LOG.info("Token generado para usuario " + usuario.get().getNombre() + " " + newtoken);
 			}
 
 		}

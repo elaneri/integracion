@@ -53,10 +53,13 @@ public class UsuarioController {
 			}
 			
 		} catch (ResponseStatusException e) {
-			throw new Exception(e.fillInStackTrace());
+			LOG.error(e.getMessage());
+			throw new ResponseStatusException(
+					HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
 		} catch (Exception e) {
-			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
-			throw new Exception(SSOMessages.ERROR_GENERICO.toString());
+			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);			
+			throw new ResponseStatusException(
+					HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
 		}
 	}
 

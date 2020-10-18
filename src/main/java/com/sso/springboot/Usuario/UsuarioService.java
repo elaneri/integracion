@@ -16,7 +16,9 @@ public interface UsuarioService {
 	
 	public Optional<Usuario> findByUserNameAndTenant(String user, String apiKey);
 	
-	public Optional<Usuario> findByUserIdAndTenant(String userId);
+	public Optional<Usuario> findByUserId(String userId);
+
+	public Optional<Usuario> findByUserIdAndTenant(String userId, String apiKey);
 	
 
 

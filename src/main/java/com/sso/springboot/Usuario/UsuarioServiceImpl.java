@@ -120,7 +120,25 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Optional<Usuario> findByUserIdAndTenant(String userId) {
+	public Optional<Usuario> findByUserIdAndTenant(String userId, String apiKey) {
+		Tenant ten = tenantService.findByApikey(apiKey);
+		Optional<Usuario> us = this.findByUserId(userId);
+		
+		
+		if (!us.isPresent())
+			return null;
+				
+				
+		Optional<Usuario> usuario = usuarioDAO.findByUsuarioAndTenant(us.get().getUsuario(), ten);
+
+		if (usuario != null && usuario.isPresent() && usuario.get().isEnable()) {
+			return usuario;
+		} else {
+			return null;
+		}
+	}
+	@Override
+	public Optional<Usuario> findByUserId(String userId) {
 		// TODO Auto-generated method stub
 		Long usId = Long.valueOf(userId);
 		return usuarioDAO.findById(usId);
