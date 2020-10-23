@@ -10,10 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.sso.springboot.Messages.SSOMessages;
 import com.sso.springboot.Tenant.Tenant;
@@ -49,12 +47,7 @@ public class TenantFilter extends OncePerRequestFilter {
 				LOG.info("Key Validada para Tenant  " + t.getNombre());
 				chain.doFilter(request, response);
 			} else {
-//				response.setContentType("application/json");
-//				response.setCharacterEncoding("UTF-8");
-//				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//				response.getWriter().write(SSOMessages.TENANT_API_KEY.toString());
-//				
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, SSOMessages.TENANT_API_KEY.toString());
+				throw new ServletException(SSOMessages.TENANT_API_KEY.toString());
 			}
 		}
 	}
