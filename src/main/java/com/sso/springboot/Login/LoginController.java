@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,12 +75,12 @@ public class LoginController {
 
 			return ResponseEntity.ok(new JwtResponse(token));
 
-		} catch (DisabledException e) {
-			LOG.error(e.getMessage());
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_DESHABILITADO.toString(), e);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.CREDENCIALES_INVALIDAS.toString(), e);
+		} catch (Exception e) {
+			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
 		}
 	}
 }
