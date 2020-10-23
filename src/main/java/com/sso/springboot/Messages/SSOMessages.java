@@ -30,7 +30,8 @@ public enum SSOMessages {
 	JWT_VALIDO(24,"JWT Valido" ),
 	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro"),
 	JWT_VENCIDO(3, "El Token se encuentra vencido"),
-	ERROR_GENERICO(25,"Error Inesperado");
+	ERROR_GENERICO(25,"Error Inesperado"),
+	ERROR_OBTENER_USUARIO(26,"Error al obtener el usuario");
 	
 	
 	private final int code;

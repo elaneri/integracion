@@ -48,11 +48,11 @@ public class UsuarioController {
 				return ResponseEntity.ok(usuario.get());
 			} else {
 				LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.USUARIO_NO_ENCONTRADO.toString());
 			}
 		} catch (ResponseStatusException e) {
 			LOG.error(e.getMessage());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.ERROR_OBTENER_USUARIO.toString());
 		} catch (Exception e) {
 			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());

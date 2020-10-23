@@ -63,7 +63,7 @@ public class UserClaimsController {
 
 	@RequestMapping(value = "/{idUsuario}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserClaims> deleteClaim(@RequestHeader("x-api-key") String apk,
-			@PathVariable("idUsuario") long idUsuario, @RequestBody RequestClaim claim) throws Exception {
+			@PathVariable("idUsuario") long idUsuario, @RequestBody RequestClaim claim) throws ResponseStatusException {
 		
 		Optional<Usuario> us = usuarioService.findByUserIdAndTenant(String.valueOf(idUsuario),apk);
 	
