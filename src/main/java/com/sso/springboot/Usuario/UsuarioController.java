@@ -38,8 +38,7 @@ public class UsuarioController {
 		try {
 			if (usuario.isPresent()) {
 				if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
-					// validacion en caso de que el usuario pertenezca a otro
-					// tenant del que quiere visualizar....
+					// validacion en caso de que el usuario pertenezca a otro tenant del que quiere visualizar....
 					LOG.warn(SSOMessages.VER_USUARIO_DENEGADO.toString());
 					throw new ResponseStatusException(HttpStatus.FORBIDDEN,
 							SSOMessages.VER_USUARIO_DENEGADO.toString());
@@ -52,7 +51,7 @@ public class UsuarioController {
 			}
 		} catch (ResponseStatusException e) {
 			LOG.error(e.getMessage());
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.ERROR_OBTENER_USUARIO.toString());
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getReason());
 		} catch (Exception e) {
 			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
