@@ -99,13 +99,13 @@ public class LoginCallback {
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO+"&TENANT="+tenant);
+			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&TENANT="+tenant;
 			LOG.info(e.getMessage());
 
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO+"&TENANT="+tenant);
+			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&TENANT="+tenant;
 			LOG.info(e.getMessage());
 		}
 
