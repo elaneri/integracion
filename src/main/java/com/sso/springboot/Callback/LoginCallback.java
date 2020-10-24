@@ -93,19 +93,19 @@ public class LoginCallback {
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 			url = ((tn.getCallbackSuccess() == null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
-			url += "?TOKEN=" + token;
+			url += "?TOKEN=" + token+"&TENANT="+tenant;
 
 			LOG.info("Token generado para usuario = " + usuario);
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO.toString());
+			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO+"&TENANT="+tenant);
 			LOG.info(e.getMessage());
 
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO.toString());
+			url += "?ERROR=" + toURI(SSOMessages.USUARIO_INVALIDO+"&TENANT="+tenant);
 			LOG.info(e.getMessage());
 		}
 
