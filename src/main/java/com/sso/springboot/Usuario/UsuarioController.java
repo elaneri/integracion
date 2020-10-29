@@ -99,15 +99,14 @@ public class UsuarioController {
 
 			if (usuarioExistente != null && usuarioExistente.isPresent()) {
 				if (!usuarioExistente.get().getTenant().getApiKey().equals(apk.trim())) {
-					// validación en caso de que el usuario pertenezca a otro tenant
-					// del que quiere actualizar....
+					// validación en caso de que el usuario pertenezca a otro tenant del que quiere actualizar....
 					LOG.warn(SSOMessages.MODIFICAR_USUARIO_DENEGADO.toString());
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 								SSOMessages.MODIFICAR_USUARIO_DENEGADO.toString());
 				}
 
 				UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
-				Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado, apk);
+				Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado);
 				usuario.setPassword("???");
 				return ResponseEntity.ok(usuario);
 			}else {
@@ -178,6 +177,40 @@ public class UsuarioController {
 				usuarioHabilitado.setPassword("???");
 
 				return ResponseEntity.ok(usuarioHabilitado);
+			} else {
+				LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.USUARIO_NO_ENCONTRADO.toString());
+			}
+		} catch (ResponseStatusException e) {
+			LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getReason());
+		} catch (Exception e) {
+			LOG.error(SSOMessages.ERROR_GENERICO.getDescription(), e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.ERROR_GENERICO.toString());
+		}
+	}
+	
+	// PUT: http://localhost:8080/Usuarios/NewPass/1
+	@RequestMapping(value = "/NewPass/{idUsuario}", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> cambiarPasswordUsuario(@RequestHeader("x-api-key") String apk,
+			@PathVariable("idUsuario") long idUsuario, @RequestBody Usuario usuarioNuevoPass) throws Exception {
+
+		try {
+			Optional<Usuario> usuario = usuarioService.findById(idUsuario);
+
+			if (usuario != null && usuario.isPresent() && usuario.get().isEnable()) {
+				if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
+					LOG.warn(SSOMessages.HABILITAR_USUARIO_DENEGADO.toString());
+					// validacion en caso de que el usuario pertenezca a otro tenant
+					// del que quiere habilitar....
+					throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+							SSOMessages.HABILITAR_USUARIO_DENEGADO.toString());
+				}
+
+				UsuarioHelper.validarUsuario(usuarioNuevoPass, AccionUsuario.MODIFICACION_PWD);
+				Usuario usuarioNuevoPassword = usuarioService.updatePassword(usuario.get(), usuarioNuevoPass, apk);
+				usuarioNuevoPassword.setPassword("???");
+				return ResponseEntity.ok(usuarioNuevoPassword);
 			} else {
 				LOG.warn(SSOMessages.USUARIO_NO_ENCONTRADO.toString());
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.USUARIO_NO_ENCONTRADO.toString());

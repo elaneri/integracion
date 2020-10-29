@@ -75,18 +75,27 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 
 	@Override
-	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado, String apk) {
+	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado) {
 		
 		usuarioExistente.setNombre(usuarioModificado.getNombre().trim());
 		usuarioExistente.setApellido(usuarioModificado.getApellido().trim());
-		usuarioExistente.setPassword(usuarioModificado.getPassword().trim());
 		usuarioExistente.setMail(usuarioModificado.getMail().trim());
 		usuarioExistente.setFecha_nacimiento(usuarioModificado.getFecha_nacimiento().trim());
 		usuarioExistente.setTelefono(usuarioModificado.getTelefono().trim());
 		usuarioExistente.setPropiedades(usuarioModificado.getPropiedades());
 		
+		return usuarioDAO.save(usuarioExistente);
+
+	}
+	
+	@Override
+	public Usuario updatePassword(Usuario usuarioExistente, Usuario usuarioNuevoPass, String apk) {
+		
+		usuarioExistente.setPassword(usuarioNuevoPass.getPassword().trim());
+		
 		return this.save(usuarioExistente, apk);
 	}
+	
 
 	@Transactional(readOnly = true)
 	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey) {

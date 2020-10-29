@@ -8,7 +8,9 @@ public interface UsuarioService {
 	
 	public Optional<Usuario> findByUserAndPassAndApiKey(String user, String pass, String apiKey);
 	
-	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado, String apk);
+	public Usuario update(Usuario usuarioExistente, Usuario usuarioModificado);
+	
+	public Usuario updatePassword(Usuario usuarioExistente, Usuario usuarioNuevoPass, String apk);
 	
 	public Usuario delete(Usuario usuario, String apk);
 	
