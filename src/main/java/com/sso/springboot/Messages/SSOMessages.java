@@ -30,6 +30,7 @@ public enum SSOMessages {
 	JWT_VALIDO(24,"JWT Valido" ),
 	JWT_NO_EXPIRADO(3, "El Token no se puede actualizar dado que no expiro"),
 	JWT_VENCIDO(3, "El Token se encuentra vencido"),
+	CAMBIO_PWD_USUARIO_DENEGADO(16,"No se puede cambiar el pwd al usuario. Permiso denegado!"),
 	ERROR_GENERICO(25,"Error Inesperado");
 	
 	

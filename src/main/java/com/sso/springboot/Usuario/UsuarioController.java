@@ -200,11 +200,11 @@ public class UsuarioController {
 
 			if (usuario != null && usuario.isPresent() && usuario.get().isEnable()) {
 				if (!usuario.get().getTenant().getApiKey().equals(apk.trim())) {
-					LOG.warn(SSOMessages.HABILITAR_USUARIO_DENEGADO.toString());
+					LOG.warn(SSOMessages.CAMBIO_PWD_USUARIO_DENEGADO.toString());
 					// validacion en caso de que el usuario pertenezca a otro tenant
 					// del que quiere habilitar....
 					throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-							SSOMessages.HABILITAR_USUARIO_DENEGADO.toString());
+							SSOMessages.CAMBIO_PWD_USUARIO_DENEGADO.toString());
 				}
 
 				UsuarioHelper.validarUsuario(usuarioNuevoPass, AccionUsuario.MODIFICACION_PWD);
