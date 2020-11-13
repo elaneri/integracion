@@ -48,7 +48,7 @@ public class LoginController {
 	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@PostMapping
-	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,
+	public ResponseEntity loginUsuario(@RequestHeader("x-api-key") String apk,
 			@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		try {

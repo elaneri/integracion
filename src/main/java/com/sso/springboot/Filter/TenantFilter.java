@@ -38,7 +38,7 @@ public class TenantFilter extends OncePerRequestFilter {
 
 		LOG.info("Callback referrer  " + referrer);
 
-		if (referrer != null && referrer != null && referrer.indexOf(calbackurl) > 0) {
+		if (referrer != null  && referrer.indexOf(calbackurl) > 0) {
 			LOG.info("Se ignora el filtro la llamada es desde la url de callback");
 			chain.doFilter(request, response);
 		} else {

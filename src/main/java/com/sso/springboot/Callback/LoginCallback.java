@@ -53,9 +53,11 @@ public class LoginCallback {
 	private JwtTokenUtil jwtTokenUtil;
 
 	private static String CALLBACK_VALIDATOR = "/LoginCallbackValidator";
+	private static String STR_TENANT= "TENANT";
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginCallback.class);
 
+	
 
 	@PostMapping("/LoginCallback")
 	public RedirectView callBack(HttpServletRequest request, @RequestParam("usuario") String usuario,
@@ -93,19 +95,19 @@ public class LoginCallback {
 
 			request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 			url = ((tn.getCallbackSuccess() == null) ? CALLBACK_VALIDATOR : tn.getCallbackSuccess());
-			url += "?TOKEN=" + token+"&TENANT="+tenant;
+			url += "?TOKEN=" + token+"&"+STR_TENANT+"="+tenant;
 
 			LOG.info("Token generado para usuario = " + usuario);
 
 		} catch (DisabledException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&TENANT="+tenant;
+			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&"+STR_TENANT+"="+tenant;
 			LOG.info(e.getMessage());
 
 
 		} catch (BadCredentialsException e) {
 			url = ((tn.getCallbackError() == null) ? CALLBACK_VALIDATOR : tn.getCallbackError());
-			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&TENANT="+tenant;
+			url += "?ERROR=" + SSOMessages.USUARIO_INVALIDO.getCode()+"&"+STR_TENANT+"="+tenant;
 			LOG.info(e.getMessage());
 		}
 

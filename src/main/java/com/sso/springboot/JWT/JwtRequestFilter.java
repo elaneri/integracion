@@ -66,13 +66,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 					LOG.warn(SSOMessages.JWT_EXPIRADO.toString());
 
-					//throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, SSOMessages.JWT_EXPIRADO.toString());
 
 				}
 			} else {
 				LOG.warn(SSOMessages.JWT_BARRER_MISSING.toString());
 
-				//throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SSOMessages.JWT_BARRER_MISSING.toString());
 
 			}
 

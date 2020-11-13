@@ -41,14 +41,14 @@ public class JWTController {
 	private static final Logger LOG = LoggerFactory.getLogger(JWTController.class);
 
 	@RequestMapping(value = "/isAlive", method = RequestMethod.GET)
-	public ResponseEntity<?> loginUsuario(@RequestHeader("x-api-key") String apk,
+	public ResponseEntity loginUsuario(@RequestHeader("x-api-key") String apk,
 			@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		return ResponseEntity.ok(SSOMessages.JWT_VALIDO);
 	}
 
 	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
-	public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String token) throws Exception {
+	public ResponseEntity refreshToken(@RequestHeader("Authorization") String token) throws Exception {
 
 		LOG.info("Llamada a refresh de TOKEN");
 		String newtoken = "";
@@ -76,11 +76,11 @@ public class JWTController {
 
 		if (!expiredTk) {
 			LOG.info(SSOMessages.JWT_NO_EXPIRADO.toString());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.JWT_NO_EXPIRADO.toString());
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.JWT_NO_EXPIRADO.toString());
 		} else if (!canIgnoreExp) {
 			
 			LOG.info(SSOMessages.JWT_VENCIDO.toString());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SSOMessages.JWT_VENCIDO.toString());
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.JWT_VENCIDO.toString());
 			
 			
 		} else {
