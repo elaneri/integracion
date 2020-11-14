@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/Usuarios/Habilitar/**").permitAll()
 				.antMatchers("/LoginCallbackValidator/**").permitAll()
 				.antMatchers("/JWT/refresh/**").permitAll()
-
+				.antMatchers("/Tenants/**").permitAll()
 				
 				// all other requests need to be authenticated
 				.anyRequest().authenticated().and().
