@@ -89,6 +89,9 @@ public class JWTController {
 			if (!usuario.isPresent()) {
 				LOG.info(SSOMessages.USUARIO_INVALIDO.toString());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_INVALIDO.toString());
+			}else if (!usuario.get().isEnable()){
+				LOG.info(SSOMessages.USUARIO_INVALIDO.toString());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, SSOMessages.USUARIO_INVALIDO.toString());
 			} else {
 				Map<String, Object> claims = new HashMap<>();
 				List<UserClaims> userClaims = userClaimService.findClaimsForUser(usuario.get());

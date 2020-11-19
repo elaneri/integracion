@@ -104,7 +104,14 @@ public class UsuarioController {
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 								SSOMessages.MODIFICAR_USUARIO_DENEGADO.toString());
 				}
-
+				
+				if (!usuarioExistente.get().isEnable()) {
+					// validación en caso de que el usuario este deshabilitado....
+					LOG.warn(SSOMessages.USUARIO_INVALIDO.toString());
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+								SSOMessages.USUARIO_INVALIDO.toString());
+				}
+				
 				UsuarioHelper.validarUsuario(usuarioModificado, AccionUsuario.MODIFICACION);
 				Usuario usuario = usuarioService.update(usuarioExistente.get(), usuarioModificado);
 				usuario.setPassword("???");
