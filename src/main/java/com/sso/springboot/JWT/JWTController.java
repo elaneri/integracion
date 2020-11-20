@@ -57,9 +57,17 @@ public class JWTController {
 		boolean expiredTk = false;
 		boolean canIgnoreExp = false;
 
+		
+		String[] parts = token.split("\\.");
+		
+		if (parts.length<3)
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, SSOMessages.JWT_INVALIDO.toString());
+		
 		token = token.replace(JwtTokenUtil.BEARER, "");
 
 		try {
+			
+			
 			jwtTokenUtil.isTokenExpired(token);
 
 		} catch (ExpiredJwtException e) {
